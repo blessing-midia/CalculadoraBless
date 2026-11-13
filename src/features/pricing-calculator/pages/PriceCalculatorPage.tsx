@@ -12,32 +12,41 @@ import { CostCompositionCard } from '../components/workspace/CostCompositionCard
  * Mesma tela de `/hub/calculadora-de-precos` do Hub, sem o breadcrumb do Hub e
  * sem salvar/histórico (que no Hub só existem dentro de um projeto).
  */
-export default function PriceCalculatorPage() {
+export default function PriceCalculatorPage({ onHome }: { onHome: () => void }) {
   const calculator = useCalculatorWorkspace();
   const { ref, displayed, transitioning } = useCalculatorView(calculator.view);
   const resultsRef = useSwapIn<HTMLDivElement>(calculator.draft.selected.join(','));
   return (
     <div className="calculator-compact cw-workspace">
       <div className="cw-page">
-        <header className="cw-page-heading">
-          <div className="cw-page-intro">
-            <div className="cw-title">
-              <h1>Calculadora</h1>
-            </div>
-            <div className="cw-marketplaces" aria-label="Marketplaces selecionados">
-              {MARKETPLACE_LIST.map((key) => (
-                <label key={key} className="cw-market-checkbox">
-                  <input
-                    type="checkbox"
-                    aria-label={MARKETPLACES[key].name}
-                    checked={calculator.draft.selected.includes(key)}
-                    onChange={() => calculator.toggleMarketplace(key)}
-                  />
-                  <MarketplaceLogo marketplace={key} />
-                  <span>{MARKETPLACES[key].name}</span>
-                </label>
-              ))}
-            </div>
+        {/* Barra da marca: logo da Blessing e a seleção de marketplaces. */}
+        <header className="calc-brandbar">
+          <div className="calc-brand">
+            <a
+              href="/"
+              aria-label="Blessing, voltar ao início"
+              onClick={(event) => {
+                event.preventDefault();
+                onHome();
+              }}
+            >
+              <img src="/landing/blessing-logo.webp" alt="Blessing" width={190} height={58} />
+            </a>
+            <h1>Calculadora</h1>
+          </div>
+          <div className="cw-marketplaces" aria-label="Marketplaces selecionados">
+            {MARKETPLACE_LIST.map((key) => (
+              <label key={key} className="cw-market-checkbox">
+                <input
+                  type="checkbox"
+                  aria-label={MARKETPLACES[key].name}
+                  checked={calculator.draft.selected.includes(key)}
+                  onChange={() => calculator.toggleMarketplace(key)}
+                />
+                <MarketplaceLogo marketplace={key} />
+                <span>{MARKETPLACES[key].name}</span>
+              </label>
+            ))}
           </div>
         </header>
 

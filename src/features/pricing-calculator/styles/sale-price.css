@@ -1,0 +1,53 @@
+.cw-history-prices {
+  display: grid;
+  gap: 8px;
+  min-width: 215px;
+}
+.cw-history-prices > div {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+.cw-history-prices strong {
+  white-space: nowrap;
+}
+.cw-history-price {
+  cursor: pointer;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px dashed var(--calc-muted);
+  background: transparent;
+  padding: 5px 0;
+  font-weight: 600;
+}
+.cw-history-price:hover,
+.cw-history-price:focus-visible {
+  color: var(--primary-color);
+  border-bottom-color: currentColor;
+}
+.cw-history-price:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+.cw-history-price-card {
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  border-radius: 16px;
+  padding: 16px;
+  background: var(--calc-card);
+  color: var(--calc-text);
+  font-size: 12px;
+  box-shadow: var(--calc-shadow);
+}
+.cw-history-price-card > strong {
+  display: block;
+  margin-bottom: 14px;
+}
+.cw-history-price-card .cw-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 5px;
+}

@@ -1,0 +1,83 @@
+import type { ModalSection } from '../types';
+
+export const MODAL_DATA: Record<string, ModalSection> = {
+  shopee: {
+    title: 'Como funciona — Shopee',
+    subtitle: 'Estrutura de taxas 2026 por tipo de vendedor.',
+    items: [
+      { label: 'Preço de Custo', tag: 'Obrigatório', tagColor: '#FF6A00', description: 'Quanto você pagou ao fornecedor pelo produto.' },
+      { label: 'Embalagem', tag: 'Obrigatório', tagColor: '#FF6A00', description: 'Custo unitário de embalagem por pedido.' },
+      { label: 'Tipo de Vendedor', tag: 'Shopee', tagColor: '#FF3300', description: 'CNPJ e CPF comum: tabela escalonada por faixa de preço (20%+R$4,50 até R$79,99; 14%+R$16 de R$80-R$99,99; 14%+R$20 de R$100-R$199,99; 14%+R$26 de R$200-R$499,99 e acima de R$500). CPF alto volume (450+ pedidos/90 dias): mesma tabela com adicional de R$3/item vendido.' },
+      { label: 'Programa de Frete Grátis', tag: 'Shopee', tagColor: '#FF3300', description: 'Adiciona +6% à comissão percentual. Em troca, a Shopee subsidia o frete ao cliente.' },
+      { label: 'Comissão Escalonada (auto)', tag: 'Auto', tagColor: '#FF8C33', description: 'A calculadora aplica automaticamente a tabela correta conforme o preço de venda calculado, incluindo a taxa fixa da faixa correspondente.' },
+      { label: 'Shopee Ads (ACOS)', tag: 'Opcional', tagColor: '#6E6E73', description: '% do preço investido em anúncios patrocinados dentro da Shopee.' },
+      { label: 'Imposto', tag: 'Obrigatório', tagColor: '#cc2244', description: 'Alíquota efetiva do seu regime. MEI ~0%, Simples ~4-19,5%.' },
+    ],
+    table: [
+      ['Faixa (CNPJ/CPF comum)', '%', 'Taxa Fixa'],
+      ['Até R$79,99', '20%', 'R$4,50/item'],
+      ['R$80–R$99,99', '14%', 'R$16/item'],
+      ['R$100–R$199,99', '14%', 'R$20/item'],
+      ['R$200–R$499,99', '14%', 'R$26/item'],
+      ['Acima R$500', '14%', 'R$26'],
+      ['CPF alto volume', '+R$3/item', 'sobre a taxa fixa da faixa'],
+    ],
+  },
+  mercadoLivre: {
+    title: 'Como funciona — Mercado Livre',
+    subtitle: 'Comissão por tipo de anúncio e custo fixo para tickets baixos.',
+    items: [
+      { label: 'Preço de Custo', tag: 'Obrigatório', tagColor: '#FF6A00', description: 'Custo de aquisição do produto.' },
+      { label: 'Clássico vs Premium', tag: 'ML', tagColor: '#FFE600', description: 'Clássico: 10–14% conforme categoria, sem parcelamento sem juros. Premium: 15–19%, com parcelamento em até 12x sem juros para o comprador.' },
+      { label: 'Comissão da Categoria', tag: 'ML', tagColor: '#FFE600', description: 'Selecione a categoria do seu produto. A calculadora usa a taxa de comissão correspondente.' },
+      { label: 'Custo Fixo (automático)', tag: 'Auto', tagColor: '#FF8C33', description: 'Calculado automaticamente: abaixo R$12,50 → 50% do item | R$12,50-R$29 → R$6,25 | R$29-R$50 → R$6,50 | R$50-R$79 → R$6,75 | acima R$79 → R$0.' },
+      { label: 'Product Ads', tag: 'Opcional', tagColor: '#6E6E73', description: 'Investimento em publicidade paga dentro do Mercado Livre.' },
+    ],
+    table: [
+      ['Anúncio', 'Comissão', 'Custo Fixo'],
+      ['Clássico', '10–14%', 'conforme faixa'],
+      ['Premium', '15–19%', 'conforme faixa'],
+      ['Abaixo R$79', 'normal', 'R$6,25–6,75'],
+      ['Acima R$79', 'normal', 'R$0'],
+    ],
+  },
+  tiktok: {
+    title: 'Como funciona — TikTok Shop',
+    subtitle: 'Taxas atualizadas em 29/09/2026. Comissão escalonada por faixa de preço.',
+    items: [
+      { label: 'Preço de Custo', tag: 'Obrigatório', tagColor: '#FF6A00', description: 'Custo de aquisição do produto.' },
+      { label: 'Comissão (auto)', tag: 'Auto', tagColor: '#FF8C33', description: 'Produtos abaixo de R$50: 16% de comissão. Produtos acima de R$50: 12% de comissão. Teto de R$50 por pedido.' },
+      { label: 'Taxa Fixa por Item (auto)', tag: 'Auto', tagColor: '#FF8C33', description: 'Produtos abaixo de R$50: R$4 por item. Produtos acima de R$50: R$6 por item. Cobrada por item vendido.' },
+      { label: 'Comissão Afiliados', tag: 'Opcional', tagColor: '#6E6E73', description: '% pago a criadores (creators) que promovem seus produtos. Você define a taxa — é um custo opcional de marketing.' },
+      { label: 'TikTok Ads', tag: 'Opcional', tagColor: '#6E6E73', description: 'Investimento em Video Shopping Ads ou Shop Ads para alcance e escala.' },
+      { label: 'Imposto', tag: 'Obrigatório', tagColor: '#cc2244', description: 'TikTok Shop exige CNPJ ativo. Alíquota efetiva do seu regime.' },
+    ],
+    table: [
+      ['Faixa de Preço', 'Comissão', 'Taxa Fixa/Item'],
+      ['Abaixo de R$ 50', '16%', 'R$ 4,00'],
+      ['Acima de R$ 50', '12%', 'R$ 6,00'],
+      ['Afiliados', 'variável', 'Definido pelo vendedor'],
+    ],
+  },
+  amazon: {
+    title: 'Como funciona — Amazon',
+    subtitle: 'Comissão por categoria, mínimo R$1-2. Plano Individual ou Profissional.',
+    items: [
+      { label: 'Preço de Custo', tag: 'Obrigatório', tagColor: '#FF6A00', description: 'Custo de aquisição do produto.' },
+      { label: 'Plano Individual', tag: 'Amazon', tagColor: '#FF9900', description: 'Sem mensalidade, mas cobra R$2 por produto vendido além da comissão. Indicado para quem vende pouco volume.' },
+      { label: 'Plano Profissional', tag: 'Amazon', tagColor: '#FF9900', description: 'Grátis no 1º ano para novos vendedores. A partir do 13º mês, R$19/mês. Sem cobrança por item — ideal para quem vende mais de ~10 itens/mês.' },
+      { label: 'Comissão da Categoria', tag: 'Amazon', tagColor: '#FF9900', description: '10% (TV, Pneus) | 11% (Eletrodomésticos, Celulares, Games) | 12% (Saúde, Bebês, PC, Casa) | 13% (Eletrônicos portáteis, Beleza) | 14% (Roupas, Joias) | 15% (Livros, Demais).' },
+      { label: 'Comissão mínima (auto)', tag: 'Auto', tagColor: '#FF8C33', description: 'A calculadora aplica comissão mínima de R$1-2 por item — a Amazon cobra o maior valor entre % da categoria e o mínimo.' },
+      { label: 'Amazon Ads', tag: 'Opcional', tagColor: '#6E6E73', description: 'Investimento em Sponsored Products ou outros formatos de anúncio.' },
+    ],
+    table: [
+      ['Categoria', 'Comissão'],
+      ['TV, Pneus, Alimentos', '10%'],
+      ['Eletrodomésticos, Celulares, Games', '11%'],
+      ['Saúde, Bebês, Casa, PC, Esportes', '12%'],
+      ['Eletrônicos portáteis, Beleza', '13%'],
+      ['Roupas, Joias, Calçados', '14%'],
+      ['Livros, Música, Demais', '15%'],
+    ],
+  },
+};

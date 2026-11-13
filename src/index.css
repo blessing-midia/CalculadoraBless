@@ -1,0 +1,1002 @@
+@import "tailwindcss";
+@import "./features/pricing-calculator/styles/calculator.css";
+@import "./features/pricing-calculator/styles/workspace.css";
+@import "./features/pricing-calculator/styles/sale-price.css";
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out forwards;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Montserrat-Variable.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Montserrat-Variable-LatinExt.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ── Brand & computed tokens (tema escuro) ───────────────────────────────────
+   Os valores escuros valem no `:root` e em qualquer elemento marcado com
+   `data-theme="dark"` — hoje, a barra do topo.
+
+   Os seletores de `sidebar` deixam o menu lateral sempre escuro, também no
+   tema claro. Vão por CSS e não por atributo no componente porque no desktop
+   os props do `<Sidebar>` caem em `sidebar-container`, mas no mobile vão para
+   o `Sheet` do Radix e nunca viram atributo no elemento visível — um
+   `data-theme` no JSX cobriria só metade dos casos.
+
+   São três slots porque três elementos pintam algo: `sidebar-inner` faz o
+   fundo, `sidebar-container` a borda, e `[data-slot="sidebar"]` — o wrapper
+   externo no desktop e o `Sheet` no mobile — recebe um `border-right` nos
+   overrides do fim deste arquivo. Faltando o wrapper, era ele que resolvia
+   `--border-color` pelo tema claro e desenhava a linha branca entre o menu e o
+   topo. Nada de valor é duplicado: tudo reaproveita esta declaração.
+
+   Quando o tema é claro, `:root[data-theme="light"]` (0,2,0) vence `:root`
+   (0,1,0), e `[data-theme="dark"]` não casa porque o valor do atributo é
+   outro. Não há ambiguidade entre os dois. */
+:root,
+[data-theme="dark"],
+[data-slot="sidebar-container"],
+[data-slot="sidebar-inner"],
+[data-slot="sidebar"] {
+  /* Brand */
+  --primary-color: #ff4c0c;
+  --white-text: #fff;
+  --black-text: #000;
+
+  /* Backgrounds */
+  --header-bg: #000;
+  --bg: #080808;
+  --bg--card: #151515;
+  --bg-input: #202020;
+
+  /* Home admin: tokens de superfície para painéis densos. No escuro, mantêm
+     a hierarquia antiga; no claro, viram cartões brancos com borda Apple. */
+  --home-panel-bg: var(--bg--card);
+  --home-card-bg: var(--bg--card);
+  --home-filter-bg: var(--bg-input);
+  --home-control-bg: var(--bg-input);
+  --home-control-border: rgba(255, 255, 255, 0.1);
+  --home-soft-border: rgba(255, 255, 255, 0.08);
+  --home-hover-bg: rgba(255, 255, 255, 0.04);
+  --home-accent-bg: rgba(255, 76, 12, 0.12);
+  --home-card-shadow: none;
+
+  /* Borders & Shadows */
+  --border-color: #2a2a2a;
+  --border: 1px solid var(--border-color);
+  --shadow: 0 16px 48px rgb(0 0 0 / 24%);
+
+  /* Primary computed variants */
+  --primary-dark: oklch(from var(--primary-color) calc(l - 0.1) c h);
+  --calc-field-bg: oklch(from var(--primary-color) 0.96 0.02 h);
+  --calc-field-border: oklch(from var(--primary-color) 0.82 0.06 h);
+  --calc-val-color: oklch(from var(--primary-color) 0.36 c h);
+  --btn-clear-bg: oklch(from var(--primary-color) 0.95 0.03 h);
+  --btn-clear-color: oklch(from var(--primary-color) 0.38 c h);
+  --gradient-ai: linear-gradient(
+    135deg,
+    oklch(from var(--primary-color) calc(l + 0.08) c h),
+    oklch(from var(--primary-color) calc(l - 0.08) calc(c + 0.04) calc(h + 30))
+  );
+
+  /* Black-text computed variants */
+  --preview-bg: oklch(from var(--primary-color) 0.22 0.06 h);
+  --plat-border: oklch(from var(--black-text) 87% 0 0);
+  --plat-text: oklch(from var(--black-text) 27% 0 0);
+  --hint-color: oklch(from var(--black-text) 47% 0 0);
+  --date-sep-color: oklch(from var(--black-text) 55% 0 0);
+  --calc-hint-color: oklch(from var(--black-text) 53% 0 0);
+
+  /* Escala de texto por prominência (ver bloco de tema claro abaixo).
+
+     Estes tokens existem porque o app escrevia cinza de rótulo como
+     `oklch(from var(--white-text) 70% c h)` — 199 vezes, em 24 arquivos. Essa
+     lightness é **absoluta**: mesmo trocando `--white-text` para preto, a
+     expressão devolve quase branco. Era o que impedia qualquer tema claro.
+
+     Os valores abaixo são exatamente o que aquelas expressões produziam: `#fff`
+     tem c=0 e h=0, então `oklch(from #fff 70% c h)` ≡ `oklch(0.70 0 0)`. A
+     troca é idêntica pixel a pixel no tema escuro. */
+  --text-strong: oklch(0.95 0 0);
+  --text-primary: oklch(0.9 0 0);
+  --text-secondary: oklch(0.7 0 0);
+  --text-muted: oklch(0.6 0 0);
+  --text-faint: oklch(0.5 0 0);
+  --text-ghost: oklch(0.2 0 0);
+
+  /* Typography */
+  --montserrat: "Montserrat", sans-serif;
+  --font-size-base: 0.75rem;
+}
+
+/* ── Calculator: Blessing color tokens ──────────────────────────────────── */
+:root,
+[data-theme="dark"],
+[data-slot="sidebar-container"],
+[data-slot="sidebar-inner"],
+[data-slot="sidebar"] {
+  --blessing-orange: var(--primary-color);
+  --blessing-orange-light: #FF8C33;
+  --blessing-orange-dark: #CC5500;
+  --blessing-white: #f5f5f7;
+  --blessing-white-dim: #a1a1a6;
+  --blessing-white-faint: #6e6e73;
+  --blessing-black: var(--bg);
+  --blessing-black-surface: #171717;
+  --blessing-black-card: var(--bg--card);
+  --blessing-black-hover: #202020;
+  --blessing-border: rgba(255, 255, 255, 0.12);
+  --blessing-border-hover: rgba(255, 255, 255, 0.2);
+
+  /* Superfícies que eram branco translúcido cravado.
+
+     `rgba(255,255,255,0.03)` sobre preto é um leve realce; sobre branco é
+     branco. Eram elas que sumiam no tema claro: o input da calculadora e a aba
+     de marketplace não selecionada. Viraram token para poder inverter. */
+  --blessing-input-bg: rgba(255, 255, 255, 0.075);
+  --blessing-input-bg-focus: rgba(255, 255, 255, 0.11);
+  --blessing-surface-subtle: rgba(255, 255, 255, 0.04);
+  /* Texto de item não selecionado: branco a 50% no escuro, cinza no claro. */
+  --blessing-text-subtle: rgba(255, 255, 255, 0.5);
+
+  /* Calculadora individual: no claro o card é branco e o painel do preço
+     cinza, o inverso do resto do Hub. Ficam na raiz por causa dos modais em portal. */
+  --calc-card: #151515;
+  --calc-panel: #101010;
+  --calc-field: #1f1f1f;
+  --calc-pill: #1c1c1c;
+  --calc-line: rgba(255, 255, 255, 0.08);
+  --calc-text: #f5f5f7;
+  --calc-muted: #8e8e93;
+  --calc-profit: #30d158;
+  --calc-cta-bg: #f5f5f7;
+  --calc-cta-fg: #0c0c0c;
+  --calc-shadow: none;
+
+  --marketplace-shopee: #ff3300;
+  --marketplace-meli: #ffe600;
+  --marketplace-tiktok: #ff0050;
+  --marketplace-amazon: #ff9900;
+  --radius-app: 14px;
+  --radius-app-lg: 20px;
+}
+
+/* ── shadcn/ui dark theme tokens ─────────────────────────────────────────── */
+:root,
+[data-theme="dark"],
+[data-slot="sidebar-container"],
+[data-slot="sidebar-inner"],
+[data-slot="sidebar"] {
+  --background: var(--bg--card);
+  --foreground: #fff;
+  --popover: #171717;
+  --popover-foreground: #fff;
+  --primary: #ff4c0c;
+  --primary-foreground: #1b0d07;
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: #fff;
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: #fff;
+  --destructive: #ef4444;
+  --ui-border: oklch(0.3 0 0);
+  --input: oklch(0.25 0 0);
+  --ring: #ff4c0c;
+  --radius: 0.75rem;
+
+  /* Sidebar */
+  --sidebar: var(--bg--card);
+  --sidebar-foreground: rgba(255, 255, 255, 0.85);
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #fff;
+  /* Fio **interno** da barra: separadores e indentação de submenu, onde o
+     traço deve ser quase imperceptível.
+
+     Não confundir com o limite entre o menu e o conteúdo — esse usa
+     `--border-color`, o cinza sólido, porque separa duas superfícies escuras e
+     precisa ser visto. Usar este token lá apaga a separação no tema escuro. */
+  --sidebar-border: rgba(255, 255, 255, 0.04);
+  --sidebar-ring: var(--primary-color);
+}
+
+/* ── Tema claro ────────────────────────────────────────────────────────────
+   O `ThemeProvider` escreve `data-theme="light"` no <html>, então este bloco
+   vale para o app inteiro e componentes em portal (Select, DateRangePicker)
+   herdam sozinhos — não precisam mais receber classe de tema por prop.
+
+   `.leads-apple` continua no seletor porque as páginas de Leads ainda aplicam
+   essa classe no <main>. É redundante com o tema global, e some quando aquelas
+   páginas forem limpas; manter as duas evita reescrevê-las neste commit. */
+:root[data-theme="light"],
+.leads-apple {
+  /* Texto */
+  --white-text: #1d1d1f;
+
+  /* Escala de texto invertida: no escuro "90%" é um cinza claro sobre fundo
+     preto; no claro a mesma prominência precisa ser um cinza escuro sobre
+     branco. O token guarda a intenção, não a cor. */
+  --text-strong: #000000;
+  --text-primary: #1d1d1f;
+  --text-secondary: #3a3a3c;
+  --text-muted: #6e6e73;
+  --text-faint: #8e8e93;
+  --text-ghost: #c7c7cc;
+
+  /* Superfícies do bloco de calculadora, que eram só escuras. */
+  --blessing-white: #1d1d1f;
+  --blessing-white-dim: #6e6e73;
+  --blessing-white-faint: #8e8e93;
+  /* Mesma hierarquia do resto do Hub: página cinza claro, card branco com
+     sombra e campo cinza claro — três níveis distintos. */
+  --blessing-black: #f6f6f8;
+  --blessing-black-surface: #ececef;
+  --blessing-black-card: #ffffff;
+  --blessing-black-hover: #e5e5ea;
+  --blessing-border: rgba(0, 0, 0, 0.08);
+  --blessing-border-hover: rgba(0, 0, 0, 0.16);
+
+  --blessing-input-bg: #f5f5f7;
+  --blessing-input-bg-focus: #ffffff;
+  --blessing-surface-subtle: #ececef;
+  --blessing-text-subtle: #6e6e73;
+
+  /* Calculadora individual (ver bloco escuro). */
+  --calc-card: #ffffff;
+  --calc-panel: #f5f5f7;
+  --calc-field: #f2f2f4;
+  --calc-pill: #ffffff;
+  --calc-line: rgba(0, 0, 0, 0.08);
+  --calc-text: #1d1d1f;
+  --calc-muted: #6e6e73;
+  --calc-profit: #1e8e3e;
+  --calc-cta-bg: #1d1d1f;
+  --calc-cta-fg: #ffffff;
+  --calc-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+
+  /* Os tokens `--sidebar-*` e `--header-bg` **não** aparecem aqui de propósito:
+     a barra do topo e o menu lateral são sempre escuros, e recebem os valores
+     escuros pelos seletores de slot lá em cima. Redefini-los no claro só
+     criaria um conflito silencioso. */
+
+  /* Fundos: página cinza claro e cards brancos, que se destacam por sombra
+     suave — a mesma linguagem das cápsulas do topo e do menu lateral. */
+  --bg: #f6f6f8;
+  --bg--card: #ffffff;
+  --bg-input: #ffffff;
+
+  /* Home admin: menos cinza carregado no claro, com detalhes sutis. */
+  --home-panel-bg: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #fbfbfd 72%,
+    rgba(255, 76, 12, 0.045) 100%
+  );
+  --home-card-bg: #ffffff;
+  --home-filter-bg: rgba(255, 255, 255, 0.82);
+  --home-control-bg: #ffffff;
+  --home-control-border: rgba(60, 60, 67, 0.16);
+  --home-soft-border: rgba(60, 60, 67, 0.12);
+  --home-hover-bg: rgba(0, 0, 0, 0.035);
+  --home-accent-bg: rgba(255, 76, 12, 0.08);
+  --home-card-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 28px rgba(0, 0, 0, 0.055);
+
+  /* Bordas & sombras */
+  --border-color: #e5e5ea;
+  --border: 1px solid var(--border-color);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+
+  /* Tokens shadcn claros */
+  --background: #ffffff;
+  --primary-foreground: #fff;
+  --radius: 0.5rem;
+  --foreground: #1d1d1f;
+  --popover: #ffffff;
+  --popover-foreground: #1d1d1f;
+  --secondary: #f5f5f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f5f5f7;
+  --muted-foreground: #6e6e73;
+  --accent: #ececef;
+  --accent-foreground: #1d1d1f;
+  --destructive: #d70015;
+  --ui-border: #e5e5ea;
+  --input: #e5e5ea;
+  --ring: #ff4c0c;
+
+  color: var(--white-text);
+}
+
+/* Label do tema escuro é branco; no claro vira cinza escuro. */
+:root[data-theme="light"] label,
+.leads-apple label {
+  color: var(--text-secondary);
+}
+
+/* O fundo da página segue o tema. Sem isto, trocar para claro deixaria as
+   bordas da viewport pretas onde nenhum componente pinta. */
+:root[data-theme="light"] body {
+  background: var(--bg);
+  color: var(--white-text);
+}
+
+/* Exceção: as telas de fora do Hub (login, redefinir e criar senha, área do
+   cliente) são ilhas escuras que ocupam a viewport inteira. Com tema claro
+   salvo, o `body` atrás delas ficava branco — invisível no desktop, onde a
+   ilha cobre tudo, mas visível no celular assim que o overscroll estica a
+   página e mostra uma faixa branca em volta.
+
+   O seletor pede os dois no **mesmo** elemento: `data-theme="dark"` sozinho
+   pegaria a barra do topo e o menu lateral, que são ilhas escuras dentro do
+   Hub claro e não devem escurecer o fundo da página. */
+:root[data-theme="light"] body:has([data-theme="dark"].min-h-screen) {
+  background: oklch(0.1 0 0);
+}
+
+/* ── Tailwind theme tokens ───────────────────────────────────────────────── */
+@theme inline {
+  --font-montserrat: "Montserrat", sans-serif;
+
+  /* Escala áurea (φ = 1,618) da calculadora. Base 0,75rem, o mesmo
+     `--font-size-base` do app; cada passo multiplica ou divide por φ.
+     Gera `p-phi-1`, `gap-phi-0`, `text-phi-2`, `rounded-phi-1`, `size-phi-n1`… */
+  --spacing-phi-n2: 0.2865rem; /*  4,6px */
+  --spacing-phi-n1: 0.4635rem; /*  7,4px */
+  --spacing-phi-0: 0.75rem; /*    12px */
+  --spacing-phi-1: 1.2135rem; /* 19,4px */
+  --spacing-phi-2: 1.9635rem; /* 31,4px */
+  --spacing-phi-3: 3.1771rem; /* 50,8px */
+  --spacing-phi-6: 13.4582rem; /* 215px */
+  --spacing-phi-7: 21.7758rem; /* 348px */
+  --spacing-phi-8: 35.234rem; /* 564px */
+
+  --text-phi-0: 0.75rem;
+  --text-phi-1: 1.2135rem;
+  --text-phi-2: 1.9635rem;
+  --text-phi-3: 3.1771rem;
+
+  --radius-phi-n1: 0.4635rem;
+  --radius-phi-0: 0.75rem;
+  --radius-phi-1: 1.2135rem;
+  --radius-phi-2: 1.9635rem;
+
+  /* Brand */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* shadcn semantic tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--ui-border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-md: var(--radius);
+
+  /* Calculator: Blessing colors */
+  --color-blessing-orange: var(--blessing-orange);
+  --color-blessing-orange-light: var(--blessing-orange-light);
+  --color-blessing-orange-dark: var(--blessing-orange-dark);
+  --color-blessing-white: var(--blessing-white);
+  --color-blessing-white-dim: var(--blessing-white-dim);
+  --color-blessing-white-faint: var(--blessing-white-faint);
+  --color-blessing-black: var(--blessing-black);
+  --color-blessing-black-surface: var(--blessing-black-surface);
+  --color-blessing-black-card: var(--blessing-black-card);
+  --color-blessing-black-hover: var(--blessing-black-hover);
+  --color-blessing-border: var(--blessing-border);
+  --color-blessing-border-hover: var(--blessing-border-hover);
+  --color-marketplace-shopee: var(--marketplace-shopee);
+  --color-marketplace-meli: var(--marketplace-meli);
+  --color-marketplace-tiktok: var(--marketplace-tiktok);
+  --color-marketplace-amazon: var(--marketplace-amazon);
+
+  /* Calculator: Radii & Shadows */
+  --radius-app: var(--radius-app);
+  --radius-app-lg: var(--radius-app-lg);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover:
+    0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(255, 106, 0, 0.1);
+  --shadow-glow-lg: 0 0 40px rgba(255, 106, 0, 0.15);
+
+  /* Calculator: Animations */
+  --animate-fade-in: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-slide-up: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-pop: pop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
+  --animate-slide-right: slideRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-slide-left: slideLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-scale-in: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-glow-pulse: glowPulse 3s ease-in-out infinite;
+}
+
+/* ── Sidebar overrides ─────────────────────────────────────────────────────
+   O `border-right` do wrapper é o traço que separa o menu do conteúdo, e é
+   assim que a produção sempre desenhou. Ele **não** foi um bug: o bug era a
+   cor.
+
+   Antes do tema claro existir, `var(--border)` só podia resolver escuro,
+   porque só havia `:root`. Com o tema claro, o wrapper passou a resolvê-lo
+   como `#e5e5ea` — cinza quase branco — e o traço discreto virou uma linha
+   berrante. A correção é o wrapper estar na lista de slots escuros lá em cima,
+   e não remover a borda: sem ela, no tema escuro não sobra separação nenhuma.
+
+   `var(--border)` e não `--sidebar-border`: este traço fica entre duas
+   superfícies escuras e precisa do cinza sólido para ser visto. O
+   `--sidebar-border`, branco a 4%, é o fio interno da barra (separadores,
+   indentação de submenu), onde o contraste desejado é menor.
+
+   A borda do container fica na mesma cor, para não haver dois tons no mesmo
+   limite — antes ela era `var(--sidebar)`, a cor do próprio fundo, o que
+   anulava a cor vinda das classes do componente. */
+[data-slot="sidebar-container"] {
+  border-color: var(--border-color);
+}
+
+[data-slot="sidebar"] {
+  border-right: var(--border) !important;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ── Base element styles ─────────────────────────────────────────────────── */
+@layer base {
+  /* Controles semânticos habilitados, inclusive os que não usam Button. */
+  :where(button, a[href], summary, select, [role="button"], [role="tab"], [role="menuitem"], [role="option"], [role="switch"], [role="checkbox"], [role="radio"], input[type="button"], input[type="submit"], input[type="reset"], input[type="checkbox"], input[type="radio"]):not(:disabled):not([aria-disabled="true"]):not([data-disabled]) {
+    cursor: pointer;
+  }
+
+  body {
+    font-family: var(--montserrat);
+    font-size: var(--font-size-base);
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--white-text);
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    border: 1px solid var(--bg--card);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
+    font-family: var(--montserrat);
+    color: white;
+    background: var(--bg-input);
+    transition: outline 0.1s;
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: 2px solid var(--primary-color);
+  }
+
+  textarea {
+    min-height: 60px;
+    resize: none;
+    overflow: hidden;
+  }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ── Utility: thin transparent scrollbar ─────────────────────────────────── */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+  }
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ── Calculator: Keyframes ─────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* ── Calculator: Component classes ─────────────────────────────────────────── */
+@layer components {
+  .card {
+    background: var(--blessing-black-card);
+    border: 1px solid var(--blessing-border);
+    border-radius: var(--radius-app);
+    box-shadow: var(--shadow-card);
+  }
+  .card-glow {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 106, 0, 0.04),
+      transparent 60%
+    );
+    border: 1px solid rgba(255, 106, 0, 0.15);
+    border-radius: var(--radius-app);
+    box-shadow: var(--shadow-glow);
+  }
+  .input-base {
+    width: 100%;
+    border-radius: var(--radius-app);
+    padding: 0.75rem 1rem;
+    min-height: 3rem;
+    color: var(--blessing-white);
+    background: var(--blessing-input-bg);
+    border: 1px solid var(--blessing-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .input-base::placeholder {
+    color: var(--blessing-white-faint);
+  }
+  .input-base:focus {
+    outline: none;
+    border-color: var(--blessing-orange);
+    box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.15);
+    background: var(--blessing-input-bg-focus);
+  }
+  .calculator-compact .input-base {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    font-size: 1rem;
+  }
+  .calculator-compact .card > .flex p.text-blessing-white-dim {
+    display: none;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-app);
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(to bottom, #ff8c33, #cc5500);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(to bottom, #ffb266, #ff6a00);
+    box-shadow: 0 0 24px rgba(255, 106, 0, 0.2);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-app);
+    font-weight: 500;
+    color: var(--blessing-white-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--blessing-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .btn-ghost:hover {
+    color: var(--blessing-white);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--blessing-border-hover);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+/* ── Calculator: Range slider ────────────────────────────────────────────────── */
+input[type="range"].calculator-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+input[type="range"].calculator-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f5f5f7;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 4px rgba(255, 106, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+input[type="range"].calculator-slider::-webkit-slider-thumb:hover {
+  box-shadow:
+    0 0 0 6px rgba(255, 106, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1);
+}
+input[type="range"].calculator-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f5f5f7;
+  cursor: pointer;
+  border: none;
+  box-shadow:
+    0 0 0 4px rgba(255, 106, 0, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Calculator: Utilities ───────────────────────────────────────────────────── */
+@layer utilities {
+  .text-gradient-orange {
+    background: linear-gradient(135deg, #ff8c33, #ff6a00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text-gradient-white {
+    background: linear-gradient(135deg, #f5f5f7, #a1a1a6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* ── Drive: ícone de pasta animado ───────────────────────────────────────────
+   Abre ao passar o mouse sobre o `.group` ancestral (o card da pasta), nas
+   cores do hub (`--primary-color`) no lugar do azul original. Dimensões base
+   80x64 — o componente escala via `transform` num wrapper para caber em
+   cards menores sem quebrar a transição de hover (ver AnimatedFolderIcon). */
+.drive-folder-icon {
+  position: relative;
+  width: 80px;
+  height: 64px;
+  transition: transform 0.2s ease-in;
+}
+
+.drive-folder-icon__back {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #e03c00;
+  border-radius: 0 5px 5px 5px;
+}
+
+.drive-folder-icon__back::after {
+  position: absolute;
+  bottom: 98%;
+  left: 0;
+  content: "";
+  width: 24px;
+  height: 8px;
+  background: #e03c00;
+  border-radius: 5px 5px 0 0;
+}
+
+.drive-folder-icon__paper {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, 10%);
+  width: 70%;
+  height: 80%;
+  background: #e6e6e6;
+  border-radius: 5px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.drive-folder-icon__paper:nth-child(2) {
+  background: #f2f2f2;
+  width: 80%;
+  height: 70%;
+}
+
+.drive-folder-icon__paper:nth-child(3) {
+  background: #ffffff;
+  width: 90%;
+  height: 60%;
+}
+
+.drive-folder-icon__front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 5px;
+  transform-origin: bottom;
+  transition: transform 0.3s ease-in-out;
+}
+
+.group:hover .drive-folder-icon {
+  transform: translateY(-8px);
+}
+
+.group:hover .drive-folder-icon__paper {
+  transform: translate(-50%, 0%);
+}
+
+.group:hover .drive-folder-icon__front {
+  transform: skew(15deg) scaleY(0.6);
+}
+
+.group:hover .drive-folder-icon__front--right {
+  transform: skew(-15deg) scaleY(0.6);
+}
+
+.lead-workspace-page button:not(:disabled) {
+  cursor: pointer;
+}
+
+/* Lista do dropdown da calculadora: barra fina, sem a trilha cinza do sistema. */
+.calc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--calc-line) transparent;
+}
+
+/*
+ * Troca de tema animada (`src/contexts/themeTransition.ts`).
+ *
+ * Com View Transitions, a tela nova é recortada numa onda cujo contorno o GSAP
+ * anima em `--theme-reveal-clip`. As animações padrão do navegador ficam
+ * desligadas; a da tela nova só existe para manter a transição viva enquanto
+ * o GSAP trabalha (o navegador encerra a transição quando as animações dos
+ * pseudo-elementos acabam).
+ */
+html.theme-reveal::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-reveal::view-transition-new(root) {
+  animation: theme-reveal-hold 1.6s linear;
+  mix-blend-mode: normal;
+  clip-path: var(--theme-reveal-clip, circle(0px at 50% 0px));
+}
+@keyframes theme-reveal-hold {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Sem View Transitions: as cores fazem um crossfade curto. */
+html.theme-crossfade,
+html.theme-crossfade *,
+html.theme-crossfade *::before,
+html.theme-crossfade *::after {
+  transition:
+    background-color 600ms ease,
+    border-color 600ms ease,
+    color 600ms ease,
+    fill 600ms ease,
+    stroke 600ms ease !important;
+}
+
+/*
+ * Cards no tema claro: brancos sobre a página cinza, destacados por sombra
+ * suave. Pega toda superfície pintada com `--bg--card` (inline ou classe) e o
+ * Card do shadcn. Na camada `components`, então a sombra própria de um
+ * componente — utilitária ou inline — continua vencendo.
+ */
+@layer components {
+  :root[data-theme="light"] :is([style*="background: var(--bg--card)"], .bg-\[var\(--bg--card\)\]) {
+    box-shadow: var(--shadow);
+  }
+}
+
+/* Carregamento dos painéis (visão geral operacional): faixa animada enquanto
+   não há dado, número entrando quando chega e selo ao atualizar por trás. */
+.hub-skeleton-line {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--white-text) 7%, transparent) 25%,
+    color-mix(in srgb, var(--white-text) 15%, transparent) 50%,
+    color-mix(in srgb, var(--white-text) 7%, transparent) 75%);
+  background-size: 200% 100%;
+  animation: hub-shimmer 1.3s ease-in-out infinite;
+}
+@keyframes hub-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+.hub-rise { animation: hub-rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+/* Entrada em cascata, igual à visão comercial: cada filho sobe um pouco depois
+   do anterior. Só na montagem; atualizar por trás não repete. */
+.hub-cascade > * { animation: hub-rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hub-cascade > :nth-child(2) { animation-delay: 0.04s; }
+.hub-cascade > :nth-child(3) { animation-delay: 0.08s; }
+.hub-cascade > :nth-child(4) { animation-delay: 0.12s; }
+.hub-cascade > :nth-child(5) { animation-delay: 0.16s; }
+.hub-cascade > :nth-child(6) { animation-delay: 0.2s; }
+.hub-cascade > :nth-child(7) { animation-delay: 0.24s; }
+.hub-cascade > :nth-child(n + 8) { animation-delay: 0.28s; }
+@keyframes hub-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.hub-refreshing {
+  position: fixed; right: 22px; bottom: 22px; z-index: 30;
+  padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  background: var(--bg--card); color: var(--white-text); border: var(--border);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-skeleton-line, .hub-rise, .hub-cascade > * { animation: none; }
+}
+
+/* COM-17 — dia de atividade atrasado (a data virou): borda vermelha que pulsa e alarme que balança. */
+@keyframes lead-deadline-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--deadline-glow, rgba(239, 68, 68, 0.5)); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+@keyframes lead-alarm-ring {
+  0%, 60%, 100% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(-14deg); }
+  20%, 40% { transform: rotate(14deg); }
+}
+.lead-deadline-overdue { --deadline-glow: rgba(239, 68, 68, 0.5); animation: lead-deadline-glow 1.4s ease-in-out infinite; }
+.lead-alarm-ring { animation: lead-alarm-ring 1.8s ease-in-out infinite; transform-origin: 50% 20%; }
+@media (prefers-reduced-motion: reduce) {
+  .lead-deadline-overdue, .lead-alarm-ring { animation: none; }
+}

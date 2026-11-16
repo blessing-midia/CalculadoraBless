@@ -62,7 +62,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
   };
 
   return (
-    <div ref={root} className="lp">
+    <div ref={root} className="lp lp--carousel">
       <header className="lp-nav" data-lp="nav">
         <img className="lp-brand" src="/landing/blessing-logo.webp" alt="Blessing" width={190} height={58} />
         <a className="lp-nav-link" href="/calculadora" onClick={enter}>
@@ -82,12 +82,17 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           </p>
 
           <div className="lp-actions" data-lp="rise">
-            <a className="lp-cta" href="/calculadora" onClick={enter} data-lp="cta">
-              <span>Calcular meu preço agora</span>
-              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
+            <div className="lp-buttons">
+              <a className="lp-cta" href="/calculadora" onClick={enter} data-lp="cta">
+                <span>Calcular meu preço agora</span>
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+              <a className="lp-secondary" href="https://www.blessingmidia.com/" target="_blank" rel="noopener noreferrer">
+                Conheça a Blessing
+              </a>
+            </div>
             <ul className="lp-perks" aria-label="Vantagens">
               {PERKS.map((perk) => (
                 <li key={perk}>
@@ -97,24 +102,11 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
               ))}
             </ul>
           </div>
-
-          <ol className="lp-steps" aria-label="Como usar" data-lp="rise">
-            {STEPS.map((step, index) => (
-              <li key={step.title} className="lp-step" data-lp="step">
-                <span className="lp-step-index">{index + 1}</span>
-                <strong>{step.title}</strong>
-                <span className="lp-step-text">{step.text}</span>
-                <i className="lp-step-bar" aria-hidden="true">
-                  <b data-lp="bar" />
-                </i>
-              </li>
-            ))}
-          </ol>
         </section>
 
-        <div className="lp-demo" data-lp="demo" aria-hidden="true">
+        <div className="lp-demo" data-lp="demo">
           {/* Seleção de marketplaces fora do card, como no topo da calculadora. */}
-          <div className="lp-markets">
+          <div className="lp-markets" aria-hidden="true">
             {MARKETPLACE_LIST.map((key) => (
               <span key={key} className="lp-chip" data-lp="chip">
                 <i className="lp-check">
@@ -126,7 +118,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             ))}
           </div>
 
-          <div className="lp-stage">
+          <div className="lp-stage" aria-hidden="true">
           {/* 1 — Produto */}
           <article className="lp-card" data-lp="card">
             <header className="lp-card-head">
@@ -274,6 +266,25 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
             </div>
           </article>
           </div>
+
+          {/* Paginação do carrossel e o "como usar", compacto, embaixo da demonstração. */}
+          <div className="lp-dots" aria-hidden="true">
+            {STEPS.map((step, index) => (
+              <i key={step.title} data-lp="dot" className={index === 0 ? 'is-active' : ''} />
+            ))}
+          </div>
+          <ol className="lp-steps lp-steps--compact" aria-label="Como usar">
+            {STEPS.map((step, index) => (
+              <li key={step.title} className="lp-step" data-lp="step">
+                <span className="lp-step-index">{index + 1}</span>
+                <strong>{step.title}</strong>
+                <span className="lp-step-text">{step.text}</span>
+                <i className="lp-step-bar" aria-hidden="true">
+                  <b data-lp="bar" />
+                </i>
+              </li>
+            ))}
+          </ol>
         </div>
       </main>
 

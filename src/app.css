@@ -62,8 +62,36 @@
 .calc-brandbar .cw-market-checkbox input { accent-color: #ff4c0c; width: 14px; height: 14px; }
 .calc-brandbar .cw-market-checkbox .cw-logo { width: 22px; height: 22px; }
 
+.calc-brandbar .cw-marketplaces { margin-left: auto; }
+
+/* Desktop estreito: os nomes saem das seleções para tudo caber numa linha. */
+@media (min-width: 761px) and (max-width: 1180px) {
+  .calc-brandbar .cw-market-checkbox span { display: none; }
+  .calc-brandbar .cw-market-checkbox { padding: 7px 10px; }
+}
+
+/* Celular: resultado único com o preço em cima e lucro/margem lado a lado
+   embaixo, para nenhum valor quebrar linha. */
+@media (max-width: 640px) {
+  .calc-screen .cw-result-list[data-count="1"] .cw-result {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "brand brand" "price price" "profit margin";
+    grid-template-rows: auto auto auto;
+    gap: 14px 16px;
+    padding: 6px 4px 4px;
+  }
+  .calc-screen .cw-result-list[data-count="1"] .cw-price { font-size: 34px; }
+  .calc-screen .cw-result-list[data-count="1"] .cw-profit { font-size: 21px; align-self: start; }
+  .calc-screen .cw-result-list[data-count="1"] .cw-margin { font-size: 17px; align-self: start; }
+  .calc-screen .cw-result-list strong { white-space: nowrap; }
+  /* Cards na altura do conteúdo: sem vão vazio quando há poucos marketplaces. */
+  .calc-screen .cw-card { height: auto; min-height: 0; }
+}
+
+/* Celular: logo e título na primeira linha, seleções na segunda. */
 @media (max-width: 760px) {
-  .calc-brandbar { padding: 8px 12px; border-radius: 22px; justify-content: center; }
+  .calc-brandbar { padding: 12px 14px; border-radius: 24px; justify-content: center; row-gap: 12px; }
+  .calc-brandbar .cw-marketplaces { margin-left: 0; }
   .calc-brand img { height: 36px; }
   .calc-brand, .calc-brand h1 { gap: 10px; }
   .calc-brand h1 { font-size: 15px; }

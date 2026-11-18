@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { CalculatorWorkspaceController } from "../../controllers/useCalculatorWorkspace";
 import { MARKETPLACE_FIELDS } from "../../domain/config/individual-fields";
 import {
@@ -38,8 +39,8 @@ export function MarketplaceSettingsCard({
               <div
                 className="cw-settings-fields"
                 style={{
-                  gridTemplateColumns: `repeat(${config.settings.length + (config.shippingLabel ? 1 : 0)}, minmax(0,1fr))`,
-                }}
+                  "--cw-setting-columns": config.settings.length + (config.shippingLabel ? 1 : 0),
+                } as CSSProperties}
               >
                 {config.settings.map((field) => (
                   <SettingTile

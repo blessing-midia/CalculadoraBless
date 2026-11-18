@@ -325,6 +325,7 @@
   flex: 1;
   min-width: 0;
   display: grid;
+  grid-template-columns: repeat(var(--cw-setting-columns, 1), minmax(0, 1fr));
   gap: 7px;
 }
 .cw-settings-fields .calc-tile {

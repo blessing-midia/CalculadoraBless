@@ -73,7 +73,12 @@ function CostChart({ quote }: { quote: WorkspaceQuote }) {
         <div className="cw-legend-head">
           <span>Item</span>
           <span>Valor</span>
-          <span>%</span>
+          <span
+            title="Percentual sobre o preço de venda"
+            aria-label="Percentual sobre o preço de venda"
+          >
+            % venda
+          </span>
         </div>
         {quote.rows.map((row) => (
           <button
@@ -99,7 +104,9 @@ function CostChart({ quote }: { quote: WorkspaceQuote }) {
             </span>
             <span>{formatCurrency(row.value)}</span>
             <strong>
-              {formatPercentShort(quote.cost > 0 ? row.value / quote.cost : 0)}
+              {formatPercentShort(
+                quote.result.salePrice > 0 ? row.value / quote.result.salePrice : 0,
+              )}
             </strong>
           </button>
         ))}

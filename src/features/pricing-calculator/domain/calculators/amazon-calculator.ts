@@ -25,7 +25,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
     adsPercent,
     promoPercent,
     taxPercent,
-    otherPercent,
+    otherCost,
     calculationMode = 'margin',
     targetMargin = 0,
     targetSalePrice = 0,
@@ -35,7 +35,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
   const commissionPercent = getAmazonCommissionRate(category);
   const marketingPercent = adsPercent + promoPercent;
 
-  if (productCost + packagingCost + shippingCost < 0 || targetMargin < 0) {
+  if (productCost + packagingCost + shippingCost + otherCost < 0 || targetMargin < 0) {
     return { salePrice: 0, profit: 0, breakdown: emptyBreakdown() };
   }
 
@@ -49,7 +49,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
     const commissionValue = getAmazonCommission({ totalSaleAmount: salePrice, category });
     const marketingValue = salePrice * marketingPercent;
     const taxValue = salePrice * taxPercent;
-    const otherValue = salePrice * otherPercent;
+    const otherValue = otherCost;
 
     const profitValue =
       salePrice -
@@ -69,7 +69,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
     };
   }
 
-  const variableShare = commissionPercent + marketingPercent + taxPercent + otherPercent + targetMargin;
+  const variableShare = commissionPercent + marketingPercent + taxPercent + targetMargin;
 
   if (isVariableShareInvalid(variableShare)) {
     return { salePrice: 0, profit: 0, breakdown: emptyBreakdown() };
@@ -79,7 +79,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
   let extraMinCommission = 0;
 
   for (let attempt = 0; attempt < 30; attempt += 1) {
-    const baseCosts = productCost + packagingCost + shippingCost + itemFee + extraMinCommission;
+    const baseCosts = productCost + packagingCost + shippingCost + otherCost + itemFee + extraMinCommission;
 
     salePrice = baseCosts / (1 - variableShare);
 
@@ -91,7 +91,7 @@ export const calculateAmazonPrice = (input: AmazonInput): CalculatorResult => {
   const commissionValue = getAmazonCommission({ totalSaleAmount: salePrice, category });
   const marketingValue = salePrice * marketingPercent;
   const taxValue = salePrice * taxPercent;
-  const otherValue = salePrice * otherPercent;
+  const otherValue = otherCost;
 
   const profitValue =
     salePrice -

@@ -54,15 +54,15 @@ export default function PriceCalculatorPage({ onHome }: { onHome: () => void }) 
           <div hidden={displayed !== 'calculator'}>
             <div className="cw-grid">
               <ProductCard calculator={calculator} />
-              <div className="cw-result-slot" ref={resultsRef}>
-                <ResultsCard quotes={calculator.quotes} />
-              </div>
-              <MarketplaceSettingsCard calculator={calculator} />
               <CostCompositionCard
                 quote={calculator.detailQuote}
                 selected={calculator.draft.selected}
                 onSelect={calculator.setDetail}
               />
+              <MarketplaceSettingsCard calculator={calculator} />
+              <div className="cw-result-slot" ref={resultsRef}>
+                <ResultsCard quotes={calculator.quotes} />
+              </div>
             </div>
             <p className="cw-footnote" role="status">
               {calculator.message || 'Atualiza ao editar · Valores por unidade'}

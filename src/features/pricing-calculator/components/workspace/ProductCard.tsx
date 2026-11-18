@@ -89,7 +89,7 @@ export function ProductCard({ calculator }: { calculator: CalculatorWorkspaceCon
             key={field.key}
             label={field.label}
             value={draft.extras.shopee[field.key]}
-            unit="%"
+            unit={field.key === 'other' ? 'R$' : '%'}
             onChange={(value) => calculator.updateExtra(field.key, value)}
           />
         ))}

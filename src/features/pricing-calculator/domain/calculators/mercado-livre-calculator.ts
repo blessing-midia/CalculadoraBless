@@ -30,16 +30,16 @@ export const calculateMercadoLivrePrice = ({
   adsPercent = 0,
   promoPercent = 0,
   taxPercent = 0,
-  otherPercent = 0,
+  otherCost = 0,
   installmentExtraPercent = 0,
   installmentExtraFixed = 0,
   calculationMode = 'margin',
   targetMargin = 0,
   targetSalePrice = 0,
 }: MercadoLivreInput): CalculatorResult => {
-  const fixedBaseCosts = productCost + packagingCost + shippingCost;
+  const fixedBaseCosts = productCost + packagingCost + shippingCost + otherCost;
   const marketingPercent = adsPercent + promoPercent;
-  const extraVariablePercent = marketingPercent + taxPercent + otherPercent;
+  const extraVariablePercent = marketingPercent + taxPercent;
 
   if (fixedBaseCosts < 0 || targetMargin < 0) {
     return invalidResult();
@@ -63,7 +63,7 @@ export const calculateMercadoLivrePrice = ({
 
     const marketingValue = salePrice * marketingPercent;
     const taxValue = salePrice * taxPercent;
-    const otherValue = salePrice * otherPercent;
+    const otherValue = otherCost;
 
     const totalCosts =
       productCost + packagingCost + shippingCost + finalFees.totalMarketplaceFee + marketingValue + taxValue + otherValue;
@@ -93,7 +93,7 @@ export const calculateMercadoLivrePrice = ({
         totalMarketplaceFee: roundMoney(finalFees.totalMarketplaceFee),
         marketingPercent,
         taxPercent,
-        otherPercent,
+        otherCost,
         targetSalePrice: salePrice,
       },
     };
@@ -149,7 +149,7 @@ export const calculateMercadoLivrePrice = ({
 
   const marketingValue = salePrice * marketingPercent;
   const taxValue = salePrice * taxPercent;
-  const otherValue = salePrice * otherPercent;
+  const otherValue = otherCost;
 
   const totalCosts =
     productCost + packagingCost + shippingCost + finalFees.totalMarketplaceFee + marketingValue + taxValue + otherValue;
@@ -179,7 +179,7 @@ export const calculateMercadoLivrePrice = ({
       totalMarketplaceFee: roundMoney(finalFees.totalMarketplaceFee),
       marketingPercent,
       taxPercent,
-      otherPercent,
+      otherCost,
       targetMargin,
     },
   };

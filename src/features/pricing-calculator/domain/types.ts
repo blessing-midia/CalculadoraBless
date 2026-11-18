@@ -32,7 +32,7 @@ export interface BaseCalculatorInput {
   adsPercent: number;
   promoPercent: number;
   taxPercent: number;
-  otherPercent: number;
+  otherCost: number;
   calculationMode?: CalculationMode;
   targetMargin?: number;
   targetSalePrice?: number;

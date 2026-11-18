@@ -21,7 +21,7 @@ export interface ProductInputs {
   targetSalePrice: number;
 }
 
-/** Custos extras editados na própria página e isolados por marketplace. */
+/** Ads, promo e impostos em pontos percentuais; outros e frete em reais. */
 export interface ExtraCosts {
   ads: number;
   promo: number;
@@ -77,7 +77,7 @@ function toBaseInput(product: ProductInputs, extras: ExtraCosts): BaseCalculator
     adsPercent: extras.ads / 100,
     promoPercent: extras.promo / 100,
     taxPercent: extras.tax / 100,
-    otherPercent: extras.other / 100,
+    otherCost: extras.other,
     calculationMode: product.calculationMode,
     targetMargin: product.margin / 100,
     targetSalePrice: product.targetSalePrice,

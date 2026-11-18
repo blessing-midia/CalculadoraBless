@@ -19,15 +19,15 @@ export const calculateShopeePrice = (input: ShopeeInput): CalculatorResult => {
     adsPercent,
     promoPercent,
     taxPercent,
-    otherPercent,
+    otherCost,
     calculationMode = 'margin',
     targetMargin = 0,
     targetSalePrice = 0,
   } = input;
 
   const marketingPercent = adsPercent + promoPercent;
-  const extraVariablePercent = marketingPercent + taxPercent + otherPercent;
-  const fixedBaseCosts = productCost + packagingCost;
+  const extraVariablePercent = marketingPercent + taxPercent;
+  const fixedBaseCosts = productCost + packagingCost + otherCost;
 
   if (fixedBaseCosts < 0 || targetMargin < 0) {
     return { salePrice: 0, profit: 0, breakdown: emptyBreakdown() };
@@ -43,7 +43,7 @@ export const calculateShopeePrice = (input: ShopeeInput): CalculatorResult => {
     const finalFees = getShopeeFeeBreakdown({ salePrice, sellerType });
     const marketingValue = salePrice * marketingPercent;
     const taxValue = salePrice * taxPercent;
-    const otherValue = salePrice * otherPercent;
+    const otherValue = otherCost;
 
     const totalCosts =
       productCost + packagingCost + finalFees.totalMarketplaceFee + marketingValue + taxValue + otherValue;
@@ -92,7 +92,7 @@ export const calculateShopeePrice = (input: ShopeeInput): CalculatorResult => {
 
   const marketingValue = salePrice * marketingPercent;
   const taxValue = salePrice * taxPercent;
-  const otherValue = salePrice * otherPercent;
+  const otherValue = otherCost;
 
   const totalCosts =
     productCost + packagingCost + finalFees.totalMarketplaceFee + marketingValue + taxValue + otherValue;

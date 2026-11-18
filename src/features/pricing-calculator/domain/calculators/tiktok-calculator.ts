@@ -20,13 +20,13 @@ export const calculateTikTokPrice = (input: TikTokInput): CalculatorResult => {
     adsPercent,
     promoPercent,
     taxPercent,
-    otherPercent,
+    otherCost,
     calculationMode = 'margin',
     targetMargin = 0,
     targetSalePrice = 0,
   } = input;
 
-  const baseCosts = productCost + packagingCost + shippingCost;
+  const baseCosts = productCost + packagingCost + shippingCost + otherCost;
   const marketingPercent = adsPercent + promoPercent;
 
   // Reusa a mesma tabela de `fees/tiktok-fees.ts` em vez de duplicar os
@@ -52,7 +52,7 @@ export const calculateTikTokPrice = (input: TikTokInput): CalculatorResult => {
     const affiliatesValue = salePrice * affiliatesPercent;
     const marketingValue = salePrice * marketingPercent;
     const taxValue = salePrice * taxPercent;
-    const otherValue = salePrice * otherPercent;
+    const otherValue = otherCost;
 
     const profitValue =
       salePrice -
@@ -76,7 +76,7 @@ export const calculateTikTokPrice = (input: TikTokInput): CalculatorResult => {
   let fixedFee = estimateFixedFee(baseCosts);
 
   const variableShare =
-    commissionPercent + affiliatesPercent + marketingPercent + taxPercent + otherPercent + targetMargin;
+    commissionPercent + affiliatesPercent + marketingPercent + taxPercent + targetMargin;
 
   if (isVariableShareInvalid(variableShare)) {
     return { salePrice: 0, profit: 0, breakdown: emptyBreakdown() };
@@ -90,7 +90,7 @@ export const calculateTikTokPrice = (input: TikTokInput): CalculatorResult => {
     commissionPercent = newCommissionPercent;
     fixedFee = newFixedFee;
     const newVariableShare =
-      commissionPercent + affiliatesPercent + marketingPercent + taxPercent + otherPercent + targetMargin;
+      commissionPercent + affiliatesPercent + marketingPercent + taxPercent + targetMargin;
     if (isVariableShareInvalid(newVariableShare)) {
       return { salePrice: 0, profit: 0, breakdown: emptyBreakdown() };
     }
@@ -103,7 +103,7 @@ export const calculateTikTokPrice = (input: TikTokInput): CalculatorResult => {
   const affiliatesValue = salePrice * affiliatesPercent;
   const marketingValue = salePrice * marketingPercent;
   const taxValue = salePrice * taxPercent;
-  const otherValue = salePrice * otherPercent;
+  const otherValue = otherCost;
 
   const profitValue =
     salePrice -

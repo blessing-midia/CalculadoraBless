@@ -7,6 +7,7 @@ import { ProductCard } from '../components/workspace/ProductCard';
 import { ResultsCard } from '../components/workspace/ResultsCard';
 import { MarketplaceSettingsCard } from '../components/workspace/MarketplaceSettingsCard';
 import { CostCompositionCard } from '../components/workspace/CostCompositionCard';
+import { AssessoriaLink } from '@/components/AssessoriaLink';
 
 /**
  * Mesma tela de `/hub/calculadora-de-precos` do Hub, sem o breadcrumb do Hub e
@@ -48,6 +49,7 @@ export default function PriceCalculatorPage({ onHome }: { onHome: () => void }) 
               </label>
             ))}
           </div>
+          <AssessoriaLink className="calc-assessoria-link" />
         </header>
 
         <div ref={ref} className="cw-view" aria-busy={transitioning}>

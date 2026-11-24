@@ -251,8 +251,6 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
         .add(swap(2, 0), 'toProduct')
         .to({}, { duration: 0.6 });
 
-      // O CTA respira de leve para chamar o clique.
-      gsap.to(q('[data-lp="cta"]'), { scale: 1.03, duration: 0.9, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1.6 });
     }, element);
 
     return () => ctx.revert();

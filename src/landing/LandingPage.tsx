@@ -1,4 +1,5 @@
 import { useMemo, useRef } from 'react';
+import { LandingButtons } from './LandingButtons';
 import { MARKETPLACE_LIST, MARKETPLACES } from '../features/pricing-calculator/domain/config/marketplaces';
 import { calculateWorkspaceQuote, createCalculatorDraft } from '../features/pricing-calculator/domain/workspace';
 import { formatCurrency, formatPercentShort } from '../features/pricing-calculator/domain/formatters';
@@ -65,9 +66,6 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
     <div ref={root} className="lp lp--carousel">
       <header className="lp-nav" data-lp="nav">
         <img className="lp-brand" src="/landing/blessing-logo.webp" alt="Blessing" width={190} height={58} />
-        <a className="lp-nav-link" href="/calculadora" onClick={enter}>
-          Abrir calculadora
-        </a>
       </header>
 
       <main className="lp-main">
@@ -82,17 +80,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           </p>
 
           <div className="lp-actions" data-lp="rise">
-            <div className="lp-buttons">
-              <a className="lp-cta" href="/calculadora" onClick={enter} data-lp="cta">
-                <span>Calcular meu preço agora</span>
-                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                  <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-              <a className="lp-secondary" href="https://www.blessingmidia.com/" target="_blank" rel="noopener noreferrer">
-                Conheça a Blessing
-              </a>
-            </div>
+            <LandingButtons onEnter={enter} />
             <ul className="lp-perks" aria-label="Vantagens">
               {PERKS.map((perk) => (
                 <li key={perk}>

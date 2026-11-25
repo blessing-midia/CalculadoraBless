@@ -33,7 +33,7 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
     update();
     void video.current?.play().catch(complete);
     // Never block access on a slow connection, a stalled video or a browser policy.
-    const timeout = window.setTimeout(complete, 7500);
+    const timeout = window.setTimeout(complete, 4200);
     const reduce = () => { if (motion.matches) complete(); };
     motion.addEventListener('change', reduce);
     return () => {

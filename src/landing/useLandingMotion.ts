@@ -267,6 +267,25 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
         return;
       }
       const q = gsap.utils.selector(element);
+      const cart = element.querySelector<HTMLElement>('.lp-hero-visual');
+      if (cart && window.matchMedia('(max-width: 900px)').matches) {
+        // Move the whole cart above the viewport before mounting the calculator.
+        const exitY = Number(gsap.getProperty(cart, 'y')) - cart.getBoundingClientRect().bottom - 32;
+        gsap.timeline({ onComplete: done })
+          .to(q('.lp-hero-message [data-lp="rise"], [data-lp="nav"]'), {
+            y: -20, opacity: 0, duration: 0.3, stagger: 0.035, ease: 'power2.in', overwrite: true,
+          }, 0)
+          .to(q('.lp-actions, .lp-explore'), {
+            opacity: 0, y: -12, duration: 0.25, ease: 'power2.in', overwrite: true,
+          }, 0.08)
+          .to(q('[data-lp="demo"], [data-lp="marquee"]'), {
+            opacity: 0, duration: 0.25, overwrite: true,
+          }, 0)
+          .to(cart, {
+            y: exitY, duration: 0.85, ease: 'power2.inOut', overwrite: true,
+          }, 0.06);
+        return;
+      }
       gsap
         .timeline({ defaults: { ease: 'power3.in' }, onComplete: done })
         .to(q('[data-lp="cta"]'), { scale: 0.94, duration: 0.12, ease: 'power2.out', overwrite: true })

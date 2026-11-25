@@ -16,7 +16,7 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
       onComplete();
       return;
     }
-    exitMotion.current = gsap.to(root.current.querySelectorAll('.cl-brand, .cl-video-stage, .cl-copy > *'), {
+    exitMotion.current = gsap.to(root.current.querySelectorAll('.cl-video-stage, .cl-copy > *'), {
       autoAlpha: 0,
       y: -10,
       duration: 0.22,
@@ -57,20 +57,16 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
 
   return <div ref={root} className="cl-screen" tabIndex={-1} aria-label="Preparando calculadora">
     <div className="cl-content">
-      <img className="cl-brand" src="/landing/blessing-logo-black.png" alt="Blessing" width={190} height={58} />
       <div className="cl-video-stage">
         <video ref={video} className="cl-video" src="/landing/cris-loading.mp4" poster="/landing/cris-loading-poster.jpg"
           muted playsInline preload="auto" onEnded={complete} onError={complete} aria-hidden="true" />
       </div>
       <div className="cl-copy">
-        <span className="cl-eyebrow">DO CARRINHO AO LUCRO</span>
         <h1>Preparando sua calculadora</h1>
-        <p>O Cris já está levando tudo para você.</p>
         <div ref={progress} className="cl-progress" role="progressbar" aria-label="Transição para a calculadora"
           aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}>
           <div ref={bar} className="cl-progress-fill" />
         </div>
-        <button type="button" className="cl-skip" onClick={complete}>Ir para a calculadora</button>
       </div>
     </div>
   </div>;

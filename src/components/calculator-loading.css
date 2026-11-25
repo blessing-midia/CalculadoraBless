@@ -8,18 +8,12 @@
   outline: none;
 }
 .cl-content { width: min(100%, 720px); text-align: center; }
-.cl-brand { display: block; object-fit: contain; width: 130px; height: 40px; margin: 0 auto 12px; }
 .cl-video-stage { overflow: hidden; }
 .cl-video { display: block; width: 100%; aspect-ratio: 720 / 406; object-fit: contain; background: #fff; will-change: transform; }
 .cl-copy { width: min(100%, 360px); margin: 0 auto; }
-.cl-eyebrow { display: block; margin-bottom: 12px; font-size: 9px; font-weight: 600; letter-spacing: 1.6px; color: #b63705; }
 .cl-copy h1 { margin: 0; font-size: clamp(19px, 4.5vw, 25px); font-weight: 650; line-height: 1.3; letter-spacing: -.5px; }
-.cl-copy p { margin: 10px 0 24px; color: #6e6e73; font-size: 12px; line-height: 1.6; }
-.cl-progress { height: 4px; overflow: hidden; border-radius: 99px; background: #f1f1f3; }
+.cl-progress { height: 4px; margin-top: 24px; overflow: hidden; border-radius: 99px; background: #f1f1f3; }
 .cl-progress-fill { width: 100%; height: 100%; border-radius: inherit; background: #ff4c0c; transform: scaleX(0); transform-origin: left; }
-.cl-skip { min-height: 44px; margin-top: 14px; padding: 8px 14px; border: 0; border-radius: 8px; background: transparent; color: #6e6e73; font-size: 11px; cursor: pointer; }
-.cl-skip:hover { color: #1d1d1f; background: #f5f5f7; }
-.cl-skip:focus-visible { outline: 2px solid #ff4c0c; outline-offset: 3px; }
 @media (max-height: 600px) {
   .cl-screen { padding-block: 16px; }
   .cl-video { max-height: 42svh; }

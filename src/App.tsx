@@ -7,7 +7,7 @@ import { CalculatorLoading } from './components/CalculatorLoading';
 type Route = 'landing' | 'loading' | 'calculator';
 const CALCULATOR_PATH = '/calculadora';
 
-const readRoute = (): Route => (window.location.pathname.startsWith(CALCULATOR_PATH) ? 'calculator' : 'landing');
+const readRoute = (): Route => (window.location.pathname.startsWith(CALCULATOR_PATH) ? 'loading' : 'landing');
 
 export default function App() {
   const [route, setRoute] = useState<Route>(readRoute);
@@ -23,7 +23,9 @@ export default function App() {
   }, [route]);
 
   const openCalculator = () => {
-    window.history.pushState(null, '', CALCULATOR_PATH);
+    if (!window.location.pathname.startsWith(CALCULATOR_PATH)) {
+      window.history.pushState(null, '', CALCULATOR_PATH);
+    }
     window.scrollTo(0, 0);
     setRoute('calculator');
   };

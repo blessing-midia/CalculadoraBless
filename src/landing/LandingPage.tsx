@@ -4,6 +4,8 @@ import { MARKETPLACE_LIST, MARKETPLACES } from '../features/pricing-calculator/d
 import { calculateWorkspaceQuote, createCalculatorDraft } from '../features/pricing-calculator/domain/workspace';
 import { formatCurrency, formatPercentShort } from '../features/pricing-calculator/domain/formatters';
 import { useLandingMotion } from './useLandingMotion';
+import { MobileDemo } from './MobileDemo';
+import { TypewriterText } from './TypewriterText';
 import './landing.css';
 
 const STEPS = [
@@ -50,20 +52,6 @@ function Check() {
       <path d="M6 10.2l2.6 2.6L14 7.4" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-}
-
-/** Keep full text accessible and reserve its final layout while letters appear. */
-function TypewriterText({ text }: { text: string }) {
-  const words = text.split(' ');
-  return <>
-    <span className="sr-only">{text}</span>
-    <span aria-hidden="true">{words.map((word, index) => (
-      <span key={index}>
-        <span className="lp-typed-word">{Array.from(word).map((letter, i) => <span key={i} data-lp-char>{letter}</span>)}</span>
-        {index < words.length - 1 ? ' ' : ''}
-      </span>
-    ))}</span>
-  </>;
 }
 
 export function LandingPage({ onEnter }: { onEnter: () => void }) {
@@ -119,7 +107,9 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
           </a>
         </section>
 
-        <div id="como-funciona" className="lp-demo" data-lp="demo">
+        <MobileDemo product={product} quotes={quotes} onEnter={onEnter} />
+
+        <div id="como-funciona-desktop" className="lp-demo" data-lp="demo">
           <div className="lp-demo-intro">
             <span className="lp-mobile-eyebrow"><TypewriterText text="SIMPLES, DO INÍCIO AO RESULTADO" /></span>
             <h2><TypewriterText text="Seu próximo preço começa aqui." /></h2>

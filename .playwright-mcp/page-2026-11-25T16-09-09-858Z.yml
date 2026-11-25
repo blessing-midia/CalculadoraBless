@@ -1,0 +1,23 @@
+- generic [ref=f101e3]:
+  - banner [ref=f101e4]:
+    - img "Blessing" [ref=f101e5]
+  - main [ref=f101e6]:
+    - region "Preço certo. Lucro real.":
+      - generic:
+        - generic: CALCULADORA DE PREÇOS
+        - heading "Preço certo. Lucro real." [level=1]:
+          - generic: Preço certo.
+          - generic: Lucro real.
+        - paragraph: Informe o custo e a margem. A calculadora aplica as taxas da Shopee, Mercado Livre, TikTok Shop e Amazon e mostra o preço de venda e o lucro de cada um, lado a lado.
+      - generic [ref=f101e8]:
+        - generic [ref=f101e9]:
+          - link "Calcular meu preço agora" [ref=f101e10] [cursor=pointer]:
+            - /url: /calculadora
+          - link "Diagnóstico gratuito" [ref=f101e14] [cursor=pointer]:
+            - /url: https://form.blessingmidia.com/?utm_source=calculadora
+        - list "Vantagens" [ref=f101e20]:
+          - listitem [ref=f101e21]: 100% grátis
+          - listitem [ref=f101e25]: Sem cadastro
+          - listitem [ref=f101e29]: Resultado na hora
+      - link "Veja como funciona" [ref=f101e33] [cursor=pointer]:
+        - /url: "#como-funciona"

@@ -83,7 +83,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
       const cart = element.querySelector('.lp-hero-visual');
       const message = element.querySelector('.lp-hero-message');
       const hero = element.querySelector('.lp-copy');
-      const demo = element.querySelector('.lp-demo');
+      const demo = element.querySelector('.lp-mobile-demo');
       if (!cart || !message || !hero || !demo) return;
       // Bring the next section directly below the cart, reclaiming the CTA area
       // once those controls have faded. Its content stays hidden until scrolling.
@@ -120,7 +120,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
           toggleActions: 'restart none none reset',
         },
       });
-      element.querySelectorAll('.lp-demo-intro > *').forEach((text, index) => {
+      demo.querySelectorAll('.lp-demo-intro > *').forEach((text, index) => {
         const at = [0, 0.45, 1.25][index] ?? 0;
         reveal
           .fromTo(text, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, at)
@@ -128,7 +128,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
             opacity: 1, duration: 0.02, stagger: index === 1 ? 0.04 : 0.026, ease: 'none',
           }, at + 0.08);
       });
-      reveal.fromTo(element.querySelectorAll('.lp-markets .lp-chip, .lp-stage, .lp-dots, .lp-steps > li'),
+      reveal.fromTo(demo.querySelectorAll('.lp-md-markets .lp-chip, .lp-md-stage, .lp-md-navigation, .lp-md-steps > li, .lp-md-cta'),
         { autoAlpha: 0, y: 22 },
         { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out' }, 1.1,
       );
@@ -140,6 +140,8 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
   useLayoutEffect(() => {
     const element = root.current;
     if (!element) return;
+    const media = gsap.matchMedia();
+    media.add('(min-width: 901px)', () => {
     const q = gsap.utils.selector(element);
     const steps = q('[data-lp="step"]');
     const bars = q('[data-lp="bar"]');
@@ -323,6 +325,8 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
     }, element);
 
     return () => ctx.revert();
+    });
+    return () => media.revert();
   }, [root]);
 
   /** Saída antes de abrir a calculadora. */
@@ -349,7 +353,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
           .to(q('.lp-actions, .lp-explore'), {
             opacity: 0, y: -12, duration: 0.25, ease: 'power2.in', overwrite: true,
           }, 0.08)
-          .to(q('[data-lp="demo"], [data-lp="marquee"]'), {
+          .to(q('.lp-mobile-demo, [data-lp="demo"], [data-lp="marquee"]'), {
             opacity: 0, duration: 0.25, overwrite: true,
           }, 0)
           .to(cart, {

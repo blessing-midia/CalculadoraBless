@@ -1,0 +1,163 @@
+- generic [ref=f3e5]:
+  - banner [ref=f3e6]:
+    - generic [ref=f3e7]:
+      - link "Blessing, voltar ao início" [ref=f3e8] [cursor=pointer]:
+        - /url: /
+        - img "Blessing" [ref=f3e9]
+      - heading "Calculadora" [level=1] [ref=f3e10]
+    - generic "Marketplaces selecionados" [ref=f3e11]:
+      - checkbox "Shopee" [checked] [ref=f3e13] [cursor=pointer]
+      - checkbox "Mercado Livre" [checked] [ref=f3e16] [cursor=pointer]
+      - checkbox "TikTok Shop" [checked] [ref=f3e19] [cursor=pointer]
+      - checkbox "Amazon" [checked] [ref=f3e22] [cursor=pointer]
+  - generic [ref=f3e25]:
+    - generic [ref=f3e26]:
+      - region "Produto" [ref=f3e27]:
+        - generic [ref=f3e28]:
+          - heading "Produto" [level=2] [ref=f3e29]
+          - radiogroup "Modo de cálculo" [ref=f3e30]:
+            - radio "Definir margem" [checked] [ref=f3e32] [cursor=pointer]
+            - radio "Definir preço" [ref=f3e33] [cursor=pointer]
+        - generic [ref=f3e34]:
+          - generic [ref=f3e35]:
+            - generic [ref=f3e36]: Custo do Produto
+            - generic [ref=f3e37]:
+              - generic [ref=f3e38]: R$
+              - textbox "Custo do Produto" [ref=f3e39]: 25,00
+          - generic [ref=f3e40]:
+            - generic [ref=f3e41]: Margem desejada
+            - generic [ref=f3e42]:
+              - textbox "Margem desejada" [ref=f3e43]: "26"
+              - generic [ref=f3e44]: "%"
+          - generic [ref=f3e45]:
+            - generic [ref=f3e46]: Embalagem
+            - generic [ref=f3e47]:
+              - generic [ref=f3e48]: R$
+              - textbox "Embalagem" [ref=f3e49]: 1,50
+        - generic [ref=f3e50]:
+          - generic [ref=f3e51]:
+            - generic [ref=f3e52]: Imposto
+            - generic [ref=f3e53]:
+              - textbox "Imposto" [ref=f3e54]: "0"
+              - generic [ref=f3e55]: "%"
+          - generic [ref=f3e56]:
+            - generic [ref=f3e57]: Ads ( ACOS )
+            - generic [ref=f3e58]:
+              - textbox "Ads ( ACOS )" [ref=f3e59]: "0"
+              - generic [ref=f3e60]: "%"
+          - generic [ref=f3e61]:
+            - generic [ref=f3e62]: Ferramentas de marketing
+            - generic [ref=f3e63]:
+              - textbox "Ferramentas de marketing" [ref=f3e64]: "0"
+              - generic [ref=f3e65]: "%"
+          - generic [ref=f3e66]:
+            - generic [ref=f3e67]: Outros
+            - generic [ref=f3e68]:
+              - generic [ref=f3e69]: R$
+              - textbox "Outros" [ref=f3e70]: 0,00
+      - region "Composição de custos" [ref=f3e71]:
+        - heading "Composição de custos" [level=2] [ref=f3e72]
+        - tablist "Marketplace da composição" [ref=f3e73]:
+          - tab "Shopee" [selected] [ref=f3e74] [cursor=pointer]
+          - tab "Mercado Livre" [ref=f3e76] [cursor=pointer]
+          - tab "TikTok Shop" [ref=f3e78] [cursor=pointer]
+          - tab "Amazon" [ref=f3e80] [cursor=pointer]
+        - tabpanel "Shopee" [ref=f3e82]:
+          - generic [ref=f3e83]:
+            - generic [ref=f3e84]:
+              - group "Composição de custos Shopee" [ref=f3e85]:
+                - generic [ref=f3e86]:
+                  - 'button "Custo do Produto: R$ 25,00" [ref=f3e87] [cursor=pointer]'
+                  - 'button "Embalagem: R$ 1,50" [ref=f3e88] [cursor=pointer]'
+                  - 'button "Taxa Shopee: R$ 15,98" [ref=f3e89] [cursor=pointer]'
+                  - 'button "Frete: R$ 0,00" [ref=f3e90] [cursor=pointer]'
+                  - 'button "Impostos: R$ 0,00" [ref=f3e91] [cursor=pointer]'
+                  - 'button "Ads ( ACOS ): R$ 0,00" [ref=f3e92] [cursor=pointer]'
+                  - 'button "Ferramentas de marketing: R$ 0,00" [ref=f3e93] [cursor=pointer]'
+                  - 'button "Outros: R$ 0,00" [ref=f3e94] [cursor=pointer]'
+              - generic:
+                - strong: R$ 42,48
+                - generic: Custo total
+            - generic [ref=f3e95]:
+              - generic [ref=f3e96]:
+                - generic [ref=f3e97]: Item
+                - generic [ref=f3e98]: Valor
+                - generic "Percentual sobre o preço de venda" [ref=f3e99]: "% venda"
+              - button "Custo do Produto R$ 25,00 43,5%" [ref=f3e100] [cursor=pointer]:
+                - generic [ref=f3e101]: Custo do Produto
+                - generic [ref=f3e103]: R$ 25,00
+                - strong [ref=f3e104]: 43,5%
+              - button "Embalagem R$ 1,50 2,6%" [ref=f3e105] [cursor=pointer]:
+                - generic [ref=f3e106]: Embalagem
+                - generic [ref=f3e108]: R$ 1,50
+                - strong [ref=f3e109]: 2,6%
+              - button "Taxa Shopee R$ 15,98 27,8%" [ref=f3e110] [cursor=pointer]:
+                - generic [ref=f3e111]: Taxa Shopee
+                - generic [ref=f3e113]: R$ 15,98
+                - strong [ref=f3e114]: 27,8%
+              - button "Frete R$ 0,00 0%" [ref=f3e115] [cursor=pointer]:
+                - generic [ref=f3e116]: Frete
+                - generic [ref=f3e118]: R$ 0,00
+                - strong [ref=f3e119]: 0%
+              - button "Impostos R$ 0,00 0%" [ref=f3e120] [cursor=pointer]:
+                - generic [ref=f3e121]: Impostos
+                - generic [ref=f3e123]: R$ 0,00
+                - strong [ref=f3e124]: 0%
+              - button "Ads ( ACOS ) R$ 0,00 0%" [ref=f3e125] [cursor=pointer]:
+                - generic [ref=f3e126]: Ads ( ACOS )
+                - generic [ref=f3e128]: R$ 0,00
+                - strong [ref=f3e129]: 0%
+              - button "Ferramentas de marketing R$ 0,00 0%" [ref=f3e130] [cursor=pointer]:
+                - generic [ref=f3e131]: Ferramentas de marketing
+                - generic [ref=f3e133]: R$ 0,00
+                - strong [ref=f3e134]: 0%
+              - button "Outros R$ 0,00 0%" [ref=f3e135] [cursor=pointer]:
+                - generic [ref=f3e136]: Outros
+                - generic [ref=f3e138]: R$ 0,00
+                - strong [ref=f3e139]: 0%
+      - region "Ajustes por marketplace" [ref=f3e140]:
+        - heading "Ajustes por marketplace" [level=2] [ref=f3e141]
+        - generic [ref=f3e142]:
+          - generic "Ajustes Shopee" [ref=f3e143]:
+            - button "Vendedor CNPJ" [ref=f3e147] [cursor=pointer]:
+              - generic [ref=f3e148]: Vendedor
+              - generic [ref=f3e149]: CNPJ
+          - generic "Ajustes Mercado Livre" [ref=f3e153]:
+            - generic [ref=f3e155]:
+              - button "Anúncio Clássico" [ref=f3e157] [cursor=pointer]:
+                - generic [ref=f3e158]: Anúncio
+                - generic [ref=f3e159]: Clássico
+              - button "Categoria Outras Categorias" [ref=f3e164] [cursor=pointer]:
+                - generic [ref=f3e165]: Categoria
+                - generic [ref=f3e166]: Outras Categorias
+              - generic [ref=f3e170]:
+                - generic [ref=f3e171]: Frete ao cliente
+                - generic [ref=f3e172]:
+                  - generic [ref=f3e173]: R$
+                  - textbox "Frete ao cliente" [ref=f3e174]: 0,00
+          - generic "Ajustes TikTok Shop" [ref=f3e175]:
+            - generic [ref=f3e177]:
+              - generic [ref=f3e178]:
+                - generic [ref=f3e179]: Afiliados
+                - generic [ref=f3e180]:
+                  - textbox "Afiliados" [ref=f3e181]: "0"
+                  - generic [ref=f3e182]: "%"
+              - generic [ref=f3e183]:
+                - generic [ref=f3e184]: Frete próprio
+                - generic [ref=f3e185]:
+                  - generic [ref=f3e186]: R$
+                  - textbox "Frete próprio" [ref=f3e187]: 0,00
+          - generic "Ajustes Amazon" [ref=f3e188]:
+            - generic [ref=f3e190]:
+              - button "Plano Profissional" [ref=f3e192] [cursor=pointer]:
+                - generic [ref=f3e193]: Plano
+                - generic [ref=f3e194]: Profissional
+              - button "Categoria Demais Categorias" [ref=f3e199] [cursor=pointer]:
+                - generic [ref=f3e200]: Categoria
+                - generic [ref=f3e201]: Demais Categorias
+              - generic [ref=f3e205]:
+                - generic [ref=f3e206]: Frete
+                - generic [ref=f3e207]:
+                  - generic [ref=f3e208]: R$
+                  - textbox "Frete" [ref=f3e209]: 0,00
+    - status [ref=f3e211]: Atualiza ao editar · Valores por unidade

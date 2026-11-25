@@ -9,7 +9,8 @@
 }
 .cl-content { width: min(100%, 720px); text-align: center; }
 .cl-brand { display: block; object-fit: contain; width: 130px; height: 40px; margin: 0 auto 12px; }
-.cl-video { display: block; width: 100%; aspect-ratio: 720 / 406; object-fit: contain; background: #fff; }
+.cl-video-stage { overflow: hidden; }
+.cl-video { display: block; width: 100%; aspect-ratio: 720 / 406; object-fit: contain; background: #fff; will-change: transform; }
 .cl-copy { width: min(100%, 360px); margin: 0 auto; }
 .cl-eyebrow { display: block; margin-bottom: 12px; font-size: 9px; font-weight: 600; letter-spacing: 1.6px; color: #b63705; }
 .cl-copy h1 { margin: 0; font-size: clamp(19px, 4.5vw, 25px); font-weight: 650; line-height: 1.3; letter-spacing: -.5px; }

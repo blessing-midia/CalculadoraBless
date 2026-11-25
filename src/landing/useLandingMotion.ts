@@ -103,10 +103,10 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
       timeline
         .fromTo(cart, { y: 0, scale: 1, transformOrigin: '50% 100%' }, { y: -48, scale: 1.18, duration: 1 }, 0)
         .fromTo(message, { opacity: 1, y: 0 }, { opacity: 0, y: -24, duration: 0.14 }, 0)
-        .fromTo(element.querySelector('.lp-actions-scroll'), { y: 0 }, { y: -160, duration: 1 }, 0)
-        .fromTo(element.querySelector('.lp-explore'), { y: 0 }, { y: -160, duration: 1 }, 0)
-        .fromTo(element.querySelector('.lp-actions-scroll'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.06, ease: 'power1.out' }, 0)
-        .fromTo(element.querySelector('.lp-explore'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.06, ease: 'power1.out' }, 0)
+        .fromTo(element.querySelector('.lp-actions-scroll'), { y: 0 }, { y: -112, duration: 1 }, 0)
+        .fromTo(element.querySelector('.lp-explore'), { y: 0 }, { y: -112, duration: 1 }, 0)
+        .fromTo(element.querySelector('.lp-actions-scroll'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, ease: 'power1.inOut' }, 0)
+        .fromTo(element.querySelector('.lp-explore'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, ease: 'power1.inOut' }, 0)
         .fromTo(element.querySelector('.lp-nav'), { '--lp-nav-opacity': 1 }, { '--lp-nav-opacity': 0, duration: 0.1 }, 0)
         .fromTo(demo, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.1 }, 0.45)
         .fromTo(element.querySelector('.lp-marquee'), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.7);

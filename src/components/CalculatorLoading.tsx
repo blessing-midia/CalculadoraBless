@@ -8,10 +8,23 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
   const bar = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
   const finished = useRef(false);
+  const exitMotion = useRef<gsap.core.Tween | null>(null);
   const complete = useCallback(() => {
     if (finished.current) return;
     finished.current = true;
-    onComplete();
+    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onComplete();
+      return;
+    }
+    exitMotion.current = gsap.to(root.current.querySelectorAll('.cl-brand, .cl-video-stage, .cl-copy > *'), {
+      autoAlpha: 0,
+      y: -10,
+      duration: 0.22,
+      stagger: 0.025,
+      ease: 'power2.inOut',
+      overwrite: true,
+      onComplete,
+    });
   }, [onComplete]);
 
   useEffect(() => {
@@ -35,6 +48,7 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
     const reduce = () => { if (motion.matches) complete(); };
     motion.addEventListener('change', reduce);
     return () => {
+      exitMotion.current?.kill();
       clearTimeout(timeout);
       motion.removeEventListener('change', reduce);
       ctx.revert();

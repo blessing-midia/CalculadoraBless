@@ -93,6 +93,8 @@
 }
 /* Alinhado ao conteúdo do menu (mesmo padding lateral). */
 .lp-copy { min-width: 0; max-width: 700px; padding: 0 0 0 var(--s2); }
+.lp-hero-message { display: contents; }
+.lp-mobile-eyebrow, .lp-explore, .lp-demo-intro, .lp-hero-visual { display: none; }
 .lp-title {
   margin: 0 0 var(--s2);
   font-size: var(--f-title);
@@ -515,6 +517,7 @@
     inset: auto;
     min-height: 100svh;
     overflow: visible;
+    overflow-x: clip;
     grid-template-rows: auto auto auto;
     gap: 0;
     padding: 12px 16px 0;
@@ -651,4 +654,119 @@
   .lp--carousel .lp-stage { grid-column: 2; grid-row: 2; margin-top: 0; }
   .lp--carousel .lp-dots { grid-column: 2; grid-row: 3; }
   .lp--carousel .lp-steps--compact { grid-column: 2; grid-row: 4; }
+}
+
+/* Mobile: hero de uma tela, com as duas ações na zona inferior de alcance.
+   svh considera a barra do navegador aberta e evita saltos durante a rolagem. */
+@media (max-width: 900px) {
+  .lp {
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  }
+  .lp-main { padding: 0 0 48px; gap: 0; }
+  .lp-copy {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: calc(100svh - 70px - env(safe-area-inset-top, 0px));
+    padding: 24px 4px max(12px, env(safe-area-inset-bottom, 0px));
+  }
+  .lp-hero-message {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-bottom: 0;
+  }
+  .lp-hero-visual {
+    position: relative;
+    display: block;
+    flex: 1 0 88px;
+    min-height: 88px;
+    margin: 8px 0 14px;
+    isolation: isolate;
+    overflow: hidden;
+    contain: size;
+  }
+  .lp-hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: 12% 12% 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, #ff4c0c14, transparent 70%);
+  }
+  .lp .lp-hero-visual > img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px #0000000d);
+  }
+  .lp-mobile-eyebrow {
+    display: block;
+    margin-bottom: 16px;
+    color: #b63705;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+  }
+  .lp-title { font-size: clamp(44px, 12vw, 68px); margin-bottom: 22px; }
+  .lp-description { margin-bottom: 0; max-width: 34em; font-size: 15px; line-height: 1.65; }
+  .lp-actions { flex-shrink: 0; gap: 18px; }
+  .lp-perks { order: -1; gap: 8px 14px; }
+  .lp-perks li { font-size: 11px; font-weight: 500; }
+  .lp-buttons { gap: 10px; }
+  .lp-cta { min-height: 56px; font-size: 15px; }
+  .lp-secondary { min-height: 50px; font-size: 13px; }
+  .lp-explore {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 10px;
+    color: var(--lp-muted);
+    text-decoration: none;
+    font-size: 11px;
+  }
+  .lp-explore:focus-visible { outline: 2px solid var(--lp-orange); outline-offset: 2px; border-radius: 12px; }
+  .lp-demo {
+    padding-top: 36px;
+    border-top: 1px solid var(--lp-line);
+    scroll-margin-top: 20px;
+  }
+  .lp-demo-intro { display: block; padding: 0 4px 28px; }
+  .lp-demo-intro .lp-mobile-eyebrow { margin-bottom: 12px; font-size: 9px; }
+  .lp-demo-intro h2 { max-width: 18em; font-size: 25px; font-weight: 700; line-height: 1.25; letter-spacing: -.6px; }
+  .lp-demo-intro p { margin: 12px 0 0; color: var(--lp-muted); font-size: 13px; line-height: 1.65; }
+}
+
+/* Em celulares baixos/paisagem, o conteúdo pode crescer em vez de ser cortado. */
+@media (max-width: 900px) and (max-height: 700px) {
+  .lp-copy { padding-top: 20px; }
+  .lp-hero-message { padding-bottom: 0; }
+  .lp-title { font-size: clamp(38px, 10.5vw, 54px); margin-bottom: 14px; }
+  .lp-mobile-eyebrow { margin-bottom: 12px; }
+  .lp-description { font-size: 13px; line-height: 1.55; }
+  .lp-actions { gap: 14px; }
+  .lp-perks { gap: 8px 10px; }
+  .lp-perks li { font-size: 10px; }
+}
+
+@media (max-width: 900px) and (max-height: 600px) {
+  .lp-copy { padding-top: 14px; }
+  .lp-title { font-size: 34px; margin-bottom: 10px; }
+  .lp-mobile-eyebrow { margin-bottom: 8px; }
+  .lp-description { font-size: 12px; line-height: 1.5; }
+  .lp-hero-visual { flex-basis: 64px; min-height: 64px; margin: 4px 0 8px; }
+  .lp-actions { gap: 10px; }
+  .lp-cta { min-height: 50px; }
+  .lp-secondary { min-height: 46px; }
+  .lp-explore { margin-top: 4px; min-height: 36px; }
 }

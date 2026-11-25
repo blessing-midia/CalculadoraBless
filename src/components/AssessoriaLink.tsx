@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-export function AssessoriaLink({ className, decoration }: { className: string; decoration?: ReactNode }) {
+export function AssessoriaLink({ className, decoration, label = 'Diagnóstico gratuito' }: { className: string; decoration?: ReactNode; label?: string }) {
   return (
     <a
       className={`assessoria-link ${className}`}
@@ -10,7 +10,7 @@ export function AssessoriaLink({ className, decoration }: { className: string; d
       rel="noopener noreferrer"
     >
       {decoration}
-      <span>Diagnóstico gratuito</span>
+      <span>{label}</span>
       <span className="assessoria-link-icon" aria-hidden="true">
         <ArrowUpRight size={18} />
       </span>

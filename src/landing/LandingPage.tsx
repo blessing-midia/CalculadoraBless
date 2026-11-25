@@ -57,10 +57,7 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
   const { product, quotes, shopee, arcs, total } = useDemo();
   const { leave } = useLandingMotion(root);
 
-  const enter = (event: React.MouseEvent) => {
-    event.preventDefault();
-    leave(onEnter);
-  };
+  const enter = () => leave(onEnter);
 
   return (
     <div ref={root} className="lp lp--carousel">
@@ -70,14 +67,20 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
 
       <main className="lp-main">
         <section className="lp-copy" aria-labelledby="lp-title">
-          <h1 id="lp-title" className="lp-title">
-            <span data-lp="rise">Preço certo.</span>
-            <span className="lp-accent" data-lp="rise">Lucro real.</span>
-          </h1>
-          <p className="lp-description" data-lp="rise">
-            Informe o custo e a margem. A calculadora aplica as taxas da Shopee, Mercado Livre, TikTok Shop e Amazon e
-            mostra o preço de venda e o lucro de cada um, lado a lado.
-          </p>
+          <div className="lp-hero-message">
+            <span className="lp-mobile-eyebrow" data-lp="rise">CALCULADORA DE PREÇOS</span>
+            <h1 id="lp-title" className="lp-title">
+              <span data-lp="rise">Preço certo.</span>
+              <span className="lp-accent" data-lp="rise">Lucro real.</span>
+            </h1>
+            <p className="lp-description" data-lp="rise">
+              Informe o custo e a margem. A calculadora aplica as taxas da Shopee, Mercado Livre, TikTok Shop e Amazon e
+              mostra o preço de venda e o lucro de cada um, lado a lado.
+            </p>
+          </div>
+          <div className="lp-hero-visual" data-lp="rise" aria-hidden="true">
+            <img src="/landing/carrinho-compras.png" alt="" width={512} height={512} fetchPriority="high" />
+          </div>
 
           <div className="lp-actions" data-lp="rise">
             <LandingButtons onEnter={enter} />
@@ -90,9 +93,20 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
               ))}
             </ul>
           </div>
+          <a className="lp-explore" href="#como-funciona">
+            Veja como funciona
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+              <path d="m5 8 5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </section>
 
-        <div className="lp-demo" data-lp="demo">
+        <div id="como-funciona" className="lp-demo" data-lp="demo">
+          <div className="lp-demo-intro">
+            <span className="lp-mobile-eyebrow">SIMPLES, DO INÍCIO AO RESULTADO</span>
+            <h2>Seu próximo preço começa aqui.</h2>
+            <p>Veja como seus custos se transformam em uma decisão de venda.</p>
+          </div>
           {/* Seleção de marketplaces fora do card, como no topo da calculadora. */}
           <div className="lp-markets" aria-hidden="true">
             {MARKETPLACE_LIST.map((key) => (

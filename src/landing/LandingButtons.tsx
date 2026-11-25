@@ -1,15 +1,9 @@
-import { useId, useLayoutEffect, useRef, type MouseEvent } from 'react';
+import { useId, useLayoutEffect, useRef } from 'react';
 import { AssessoriaLink } from '../components/AssessoriaLink';
 import gsap from 'gsap';
+import { wavePath } from '../components/buttonWave';
 
-function wavePath(progress: number, remaining: boolean) {
-  const x = -0.25 + progress * 1.5;
-  const bend = Math.sin(progress * Math.PI) * 0.26;
-  const edge = `M ${x} 0 C ${x + bend} 0.18 ${x - bend} 0.32 ${x} 0.5 C ${x + bend} 0.68 ${x - bend} 0.82 ${x} 1`;
-  return `${edge} L ${remaining ? 1 : 0} 1 L ${remaining ? 1 : 0} 0 Z`;
-}
-
-export function LandingButtons({ onEnter }: { onEnter: (event: MouseEvent) => void }) {
+export function LandingButtons({ onEnter }: { onEnter: () => void }) {
   const root = useRef<HTMLDivElement>(null);
   const calculateMask = useRef<SVGPathElement>(null);
   const diagnosticMask = useRef<SVGPathElement>(null);
@@ -30,17 +24,19 @@ export function LandingButtons({ onEnter }: { onEnter: (event: MouseEvent) => vo
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let current = calculate;
     let timeline: gsap.core.Timeline | undefined;
-    const animate = (immediate = false) => {
+    let navigating = false;
+    let pendingTab: Window | null = null;
+    const animate = (immediate = false, onComplete?: () => void) => {
       timeline?.kill();
       const isDiagnostic = current === diagnostic;
-      const duration = immediate || motion.matches ? 0 : 0.9;
-      timeline = gsap.timeline({ defaults: { duration, ease: 'sine.inOut', overwrite: 'auto' } });
+      const duration = immediate || motion.matches ? 0 : onComplete ? 0.38 : 0.65;
+      timeline = gsap.timeline({ defaults: { duration, ease: 'sine.inOut', overwrite: 'auto' }, onComplete });
       timeline
         .to(calculateWave, { progress: isDiagnostic ? 1 : 0, onUpdate: drawCalculate }, 0)
         .to(diagnosticWave, { progress: isDiagnostic ? 1 : 0, onUpdate: drawDiagnostic }, duration * 0.1);
     };
     const select = (link: HTMLAnchorElement) => {
-      if (current === link) return;
+      if (navigating || current === link) return;
       current = link;
       group.dataset.highlight = link === diagnostic ? 'diagnostic' : 'calculate';
       animate();
@@ -54,7 +50,41 @@ export function LandingButtons({ onEnter }: { onEnter: (event: MouseEvent) => vo
     const blur = (event: FocusEvent) => {
       if (!group.contains(event.relatedTarget as Node | null)) showCalculate();
     };
-    const updateMotion = () => animate(true);
+    const click = (event: MouseEvent) => {
+      const link = (event.target as Element).closest('a');
+      if (link !== calculate && link !== diagnostic) return;
+      // Preserve open-in-new-tab/window shortcuts and the normal external link in reduced motion.
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      if (motion.matches && link === diagnostic) return;
+      event.preventDefault();
+      if (navigating) return;
+      navigating = true;
+      group.setAttribute('aria-busy', 'true');
+
+      // Reserve the external tab inside the user gesture, before the color transition.
+      if (link === diagnostic) {
+        pendingTab = window.open('about:blank', '_blank');
+        if (pendingTab) pendingTab.opener = null;
+      }
+      current = current === diagnostic ? calculate : diagnostic;
+      group.dataset.highlight = current === diagnostic ? 'diagnostic' : 'calculate';
+      animate(false, () => {
+        if (link === calculate) {
+          onEnter();
+        } else {
+          const tab = pendingTab;
+          pendingTab = null;
+          if (tab && !tab.closed) tab.location.replace(diagnostic.href);
+          else window.location.assign(diagnostic.href);
+          navigating = false;
+          group.removeAttribute('aria-busy');
+        }
+      });
+    };
+    const updateMotion = () => {
+      if (navigating) timeline?.progress(1);
+      else animate(true);
+    };
     animate(true);
     motion.addEventListener('change', updateMotion);
     calculate.addEventListener('pointerenter', showCalculate);
@@ -62,16 +92,20 @@ export function LandingButtons({ onEnter }: { onEnter: (event: MouseEvent) => vo
     group.addEventListener('pointerleave', reset);
     group.addEventListener('focusin', focus);
     group.addEventListener('focusout', blur);
+    group.addEventListener('click', click);
     return () => {
       timeline?.kill();
+      pendingTab?.close();
+      group.removeAttribute('aria-busy');
       motion.removeEventListener('change', updateMotion);
       calculate.removeEventListener('pointerenter', showCalculate);
       diagnostic.removeEventListener('pointerenter', showDiagnostic);
       group.removeEventListener('pointerleave', reset);
       group.removeEventListener('focusin', focus);
       group.removeEventListener('focusout', blur);
+      group.removeEventListener('click', click);
     };
-  }, []);
+  }, [onEnter]);
 
   return (
     <div className="lp-buttons" ref={root}>
@@ -85,7 +119,7 @@ export function LandingButtons({ onEnter }: { onEnter: (event: MouseEvent) => vo
           </clipPath>
         </defs>
       </svg>
-      <a className="lp-cta" href="/calculadora" onClick={onEnter} data-lp="cta">
+      <a className="lp-cta" href="/calculadora" data-lp="cta">
         <span className="lp-button-wave" style={{ clipPath: `url(#${calculateClip})` }} aria-hidden="true" />
         <span>Calcular meu preço agora</span>
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">

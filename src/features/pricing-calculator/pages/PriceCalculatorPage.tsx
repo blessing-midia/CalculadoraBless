@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Package, SlidersHorizontal, ChartNoAxesCombined, ChartPie, Sparkles } from 'lucide-react';
+import { Check, Package, SlidersHorizontal, ChartNoAxesCombined, ChartPie, Sparkles } from 'lucide-react';
 import { useCalculatorWorkspace } from '../controllers/useCalculatorWorkspace';
 import { useCalculatorView } from '../controllers/useCalculatorView';
 import { useSwapIn } from '../controllers/useSegmentAnimation';
@@ -11,6 +11,7 @@ import { ResultsCard } from '../components/workspace/ResultsCard';
 import { MarketplaceSettingsCard } from '../components/workspace/MarketplaceSettingsCard';
 import { CostCompositionCard } from '../components/workspace/CostCompositionCard';
 import { AssessoriaLink } from '@/components/AssessoriaLink';
+import { StepActions } from '../components/workspace/StepActions';
 import '../styles/mobile-flow.css';
 
 const MOBILE_STEPS = [
@@ -72,7 +73,7 @@ export default function PriceCalculatorPage({ onHome }: { onHome: () => void }) 
               </label>
             ))}
           </div>
-          <AssessoriaLink className="calc-assessoria-link" />
+          <AssessoriaLink className="calc-assessoria-link" label="Diagnóstico grátis" />
         </header>
 
         <section className="cw-mobile-markets" aria-label="Seleção de marketplaces">
@@ -126,12 +127,7 @@ export default function PriceCalculatorPage({ onHome }: { onHome: () => void }) 
             </p>
           </div>
         </div>
-        <div className="cw-mobile-step-actions">
-          {step > 0 && <button type="button" className="cw-step-back" onClick={() => goToStep(step - 1)}><ArrowLeft size={17} />Voltar</button>}
-          {step < MOBILE_STEPS.length - 1
-            ? <button type="button" className="cw-step-next" onClick={() => goToStep(step + 1)}>{step === 1 ? 'Ver resultado' : 'Continuar'}<ArrowRight size={17} /></button>
-            : <button type="button" className="cw-step-next" onClick={() => goToStep(0)}>Revisar produto<ArrowRight size={17} /></button>}
-        </div>
+        <StepActions key={step} step={step} total={MOBILE_STEPS.length} onNavigate={goToStep} />
         <aside className="cw-mobile-diagnostic" aria-label="Diagnóstico gratuito">
           <span className="cw-diagnostic-icon" aria-hidden="true"><Sparkles size={20} /></span>
           <div>

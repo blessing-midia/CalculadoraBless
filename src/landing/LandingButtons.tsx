@@ -25,7 +25,6 @@ export function LandingButtons({ onEnter }: { onEnter: () => void }) {
     let current = calculate;
     let timeline: gsap.core.Timeline | undefined;
     let navigating = false;
-    let pendingTab: Window | null = null;
     const animate = (immediate = false, onComplete?: () => void) => {
       timeline?.kill();
       const isDiagnostic = current === diagnostic;
@@ -53,33 +52,26 @@ export function LandingButtons({ onEnter }: { onEnter: () => void }) {
     const click = (event: MouseEvent) => {
       const link = (event.target as Element).closest('a');
       if (link !== calculate && link !== diagnostic) return;
-      // Preserve open-in-new-tab/window shortcuts and the normal external link in reduced motion.
+      // Preserve open-in-new-tab/window shortcuts.
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
-      if (motion.matches && link === diagnostic) return;
+      // Let the browser open the external URL directly. Its navigation must not
+      // depend on a GSAP callback running after focus moves to another tab.
+      if (link === diagnostic) {
+        if (!navigating) {
+          current = current === diagnostic ? calculate : diagnostic;
+          group.dataset.highlight = current === diagnostic ? 'diagnostic' : 'calculate';
+          animate();
+        }
+        return;
+      }
       event.preventDefault();
       if (navigating) return;
       navigating = true;
       group.setAttribute('aria-busy', 'true');
 
-      // Reserve the external tab inside the user gesture, before the color transition.
-      if (link === diagnostic) {
-        pendingTab = window.open('about:blank', '_blank');
-        if (pendingTab) pendingTab.opener = null;
-      }
       current = current === diagnostic ? calculate : diagnostic;
       group.dataset.highlight = current === diagnostic ? 'diagnostic' : 'calculate';
-      animate(false, () => {
-        if (link === calculate) {
-          onEnter();
-        } else {
-          const tab = pendingTab;
-          pendingTab = null;
-          if (tab && !tab.closed) tab.location.replace(diagnostic.href);
-          else window.location.assign(diagnostic.href);
-          navigating = false;
-          group.removeAttribute('aria-busy');
-        }
-      });
+      animate(false, onEnter);
     };
     const updateMotion = () => {
       if (navigating) timeline?.progress(1);
@@ -95,7 +87,6 @@ export function LandingButtons({ onEnter }: { onEnter: () => void }) {
     group.addEventListener('click', click);
     return () => {
       timeline?.kill();
-      pendingTab?.close();
       group.removeAttribute('aria-busy');
       motion.removeEventListener('change', updateMotion);
       calculate.removeEventListener('pointerenter', showCalculate);

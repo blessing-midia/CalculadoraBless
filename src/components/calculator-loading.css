@@ -8,9 +8,11 @@
   outline: none;
 }
 .cl-content { position: relative; width: min(100%, 720px); text-align: center; }
-.cl-visual { position: relative; width: 100%; aspect-ratio: 720 / 406; max-height: 52svh; }
+.cl-visual { position: relative; width: 100%; aspect-ratio: 720 / 400; max-height: 52svh; }
 .cl-video-stage { position: absolute; inset: 0; overflow: hidden; background: #fff; }
-.cl-video { display: block; width: 100%; height: 100%; object-fit: contain; background: #fff; clip-path: inset(2px); will-change: transform; }
+.cl-video-motion { position: absolute; inset: 0; overflow: hidden; background: #fff; }
+.cl-video-motion::after { content: ''; position: absolute; inset: 0; border: 4px solid #fff; pointer-events: none; }
+.cl-video { position: absolute; top: -4px; left: -4px; display: block; width: calc(100% + 8px); max-width: none; height: calc(100% + 8px); object-fit: cover; background: #fff; }
 .cl-icon-stage { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 .cl-calculator-icon { display: block; width: clamp(96px, 20vw, 120px); height: auto; opacity: 0; visibility: hidden; will-change: transform, opacity; }
 .cl-copy { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); width: min(100%, 360px); margin: 0; }

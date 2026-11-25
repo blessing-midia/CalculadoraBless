@@ -5,6 +5,7 @@ import './calculator-loading.css';
 export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const videoMotion = useRef<HTMLDivElement>(null);
   const icon = useRef<HTMLImageElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLDivElement>(null);
@@ -41,7 +42,7 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
         progress.current?.setAttribute('aria-valuenow', String(Math.round(value * 100)));
       });
       exit
-        .fromTo(video.current, { xPercent: 0 }, { xPercent: 100, duration: 1.4, ease: 'power1.in' }, 0)
+        .fromTo(videoMotion.current, { xPercent: 0 }, { xPercent: 100, force3D: false, duration: 1.4, ease: 'power1.in' }, 0)
         .to('.cl-copy > *', { autoAlpha: 0, y: -6, duration: 0.16, stagger: 0.02, ease: 'power2.inOut' }, 1.2)
         .fromTo(icon.current, { autoAlpha: 0, scale: 0.75, y: 12 }, {
           autoAlpha: 1, scale: 1, y: 0, duration: 0.36, ease: 'back.out(1.5)',
@@ -68,8 +69,10 @@ export function CalculatorLoading({ onComplete }: { onComplete: () => void }) {
     <div className="cl-content">
       <div className="cl-visual" aria-hidden="true">
         <div className="cl-video-stage">
-          <video ref={video} className="cl-video" src="/landing/cris-loading.mp4" poster="/landing/cris-loading-poster.jpg"
-            muted playsInline preload="auto" />
+          <div ref={videoMotion} className="cl-video-motion">
+            <video ref={video} className="cl-video" src="/landing/cris-loading.mp4?v=2" poster="/landing/cris-loading-poster.jpg?v=2"
+              muted playsInline preload="auto" />
+          </div>
         </div>
         <div className="cl-icon-stage">
           <img ref={icon} className="cl-calculator-icon" src="/icone-calculadora-hub-animado.webp" alt="" width={512} height={512} />

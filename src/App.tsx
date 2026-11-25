@@ -2,8 +2,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import PriceCalculatorPage from './features/pricing-calculator/pages/PriceCalculatorPage';
 import { LandingPage } from './landing/LandingPage';
+import { CalculatorLoading } from './components/CalculatorLoading';
 
-type Route = 'landing' | 'calculator';
+type Route = 'landing' | 'loading' | 'calculator';
 const CALCULATOR_PATH = '/calculadora';
 
 const readRoute = (): Route => (window.location.pathname.startsWith(CALCULATOR_PATH) ? 'calculator' : 'landing');
@@ -18,7 +19,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.title = route === 'calculator' ? 'Calculadora · Blessing' : 'Calculadora de Preços · Blessing';
+    document.title = route === 'calculator' ? 'Calculadora · Blessing' : route === 'loading' ? 'Preparando calculadora · Blessing' : 'Calculadora de Preços · Blessing';
   }, [route]);
 
   const openCalculator = () => {
@@ -33,7 +34,17 @@ export default function App() {
     setRoute('landing');
   };
 
-  if (route === 'landing') return <LandingPage onEnter={openCalculator} />;
+  const startCalculator = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      openCalculator();
+      return;
+    }
+    window.scrollTo(0, 0);
+    setRoute('loading');
+  };
+
+  if (route === 'landing') return <LandingPage onEnter={startCalculator} />;
+  if (route === 'loading') return <CalculatorLoading onComplete={openCalculator} />;
   return <CalculatorScreen onHome={openHome} />;
 }
 

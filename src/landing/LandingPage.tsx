@@ -52,6 +52,20 @@ function Check() {
   );
 }
 
+/** Keep full text accessible and reserve its final layout while letters appear. */
+function TypewriterText({ text }: { text: string }) {
+  const words = text.split(' ');
+  return <>
+    <span className="sr-only">{text}</span>
+    <span aria-hidden="true">{words.map((word, index) => (
+      <span key={index}>
+        <span className="lp-typed-word">{Array.from(word).map((letter, i) => <span key={i} data-lp-char>{letter}</span>)}</span>
+        {index < words.length - 1 ? ' ' : ''}
+      </span>
+    ))}</span>
+  </>;
+}
+
 export function LandingPage({ onEnter }: { onEnter: () => void }) {
   const root = useRef<HTMLDivElement>(null);
   const { product, quotes, shopee, arcs, total } = useDemo();
@@ -78,20 +92,24 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
               mostra o preço de venda e o lucro de cada um, lado a lado.
             </p>
           </div>
-          <div className="lp-hero-visual" data-lp="rise" aria-hidden="true">
-            <img src="/landing/carrinho-compras.png" alt="" width={512} height={512} fetchPriority="high" />
+          <div className="lp-hero-visual" aria-hidden="true">
+            <div className="lp-cart-motion" data-lp="rise">
+              <img src="/landing/carrinho-compras.png" alt="" width={512} height={512} fetchPriority="high" />
+            </div>
           </div>
 
-          <div className="lp-actions" data-lp="rise">
-            <LandingButtons onEnter={enter} />
-            <ul className="lp-perks" aria-label="Vantagens">
-              {PERKS.map((perk) => (
-                <li key={perk}>
-                  <Check />
-                  {perk}
-                </li>
-              ))}
-            </ul>
+          <div className="lp-actions-scroll">
+            <div className="lp-actions" data-lp="rise">
+              <LandingButtons onEnter={enter} />
+              <ul className="lp-perks" aria-label="Vantagens">
+                {PERKS.map((perk) => (
+                  <li key={perk}>
+                    <Check />
+                    {perk}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           <a className="lp-explore" href="#como-funciona">
             Veja como funciona
@@ -103,9 +121,9 @@ export function LandingPage({ onEnter }: { onEnter: () => void }) {
 
         <div id="como-funciona" className="lp-demo" data-lp="demo">
           <div className="lp-demo-intro">
-            <span className="lp-mobile-eyebrow">SIMPLES, DO INÍCIO AO RESULTADO</span>
-            <h2>Seu próximo preço começa aqui.</h2>
-            <p>Veja como seus custos se transformam em uma decisão de venda.</p>
+            <span className="lp-mobile-eyebrow"><TypewriterText text="SIMPLES, DO INÍCIO AO RESULTADO" /></span>
+            <h2><TypewriterText text="Seu próximo preço começa aqui." /></h2>
+            <p><TypewriterText text="Veja como seus custos se transformam em uma decisão de venda." /></p>
           </div>
           {/* Seleção de marketplaces fora do card, como no topo da calculadora. */}
           <div className="lp-markets" aria-hidden="true">

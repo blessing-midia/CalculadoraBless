@@ -1,5 +1,8 @@
 import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -70,6 +73,69 @@ const side = (index: number, front: number, total: number) => ((index - front + 
  */
 export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
   const leaving = useRef(false);
+  const scrollMotion = useRef<gsap.core.Timeline | null>(null);
+
+  useLayoutEffect(() => {
+    const element = root.current;
+    if (!element) return;
+    const media = gsap.matchMedia();
+    media.add('(max-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+      const cart = element.querySelector('.lp-hero-visual');
+      const message = element.querySelector('.lp-hero-message');
+      const hero = element.querySelector('.lp-copy');
+      const demo = element.querySelector('.lp-demo');
+      if (!cart || !message || !hero || !demo) return;
+      // Bring the next section directly below the cart, reclaiming the CTA area
+      // once those controls have faded. Its content stays hidden until scrolling.
+      const overlap = Math.max(0, hero.getBoundingClientRect().bottom - cart.getBoundingClientRect().bottom - 24);
+      const travel = cart.getBoundingClientRect().bottom + window.scrollY + 24;
+      gsap.set(demo, { marginTop: -overlap });
+      const timeline = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: element,
+          start: 'top top',
+          end: `+=${travel}`,
+          scrub: 0.25,
+          invalidateOnRefresh: true,
+        },
+      });
+      timeline
+        .fromTo(cart, { y: 0, scale: 1, transformOrigin: '50% 100%' }, { y: -48, scale: 1.18, duration: 1 }, 0)
+        .fromTo(message, { opacity: 1, y: 0 }, { opacity: 0, y: -24, duration: 0.14 }, 0)
+        .fromTo(element.querySelector('.lp-actions-scroll'), { y: 0 }, { y: -160, duration: 1 }, 0)
+        .fromTo(element.querySelector('.lp-explore'), { y: 0 }, { y: -160, duration: 1 }, 0)
+        .fromTo(element.querySelector('.lp-actions-scroll'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.06, ease: 'power1.out' }, 0)
+        .fromTo(element.querySelector('.lp-explore'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.06, ease: 'power1.out' }, 0)
+        .fromTo(element.querySelector('.lp-nav'), { '--lp-nav-opacity': 1 }, { '--lp-nav-opacity': 0, duration: 0.1 }, 0)
+        .fromTo(demo, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.1 }, 0.45)
+        .fromTo(element.querySelector('.lp-marquee'), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.7);
+      scrollMotion.current = timeline;
+      // After the clean cart-only beat, each element enters on its own timeline.
+      // The parent visibility above guarantees no overlap when returning to the hero.
+      const reveal = gsap.timeline({
+        scrollTrigger: {
+          trigger: element,
+          start: `top -${travel * 0.45}px`,
+          toggleActions: 'restart none none reset',
+        },
+      });
+      element.querySelectorAll('.lp-demo-intro > *').forEach((text, index) => {
+        const at = [0, 0.45, 1.25][index] ?? 0;
+        reveal
+          .fromTo(text, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, at)
+          .fromTo(text.querySelectorAll('[data-lp-char]'), { opacity: 0 }, {
+            opacity: 1, duration: 0.02, stagger: index === 1 ? 0.04 : 0.026, ease: 'none',
+          }, at + 0.08);
+      });
+      reveal.fromTo(element.querySelectorAll('.lp-markets .lp-chip, .lp-stage, .lp-dots, .lp-steps > li'),
+        { autoAlpha: 0, y: 22 },
+        { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out' }, 1.1,
+      );
+      return () => { scrollMotion.current = null; };
+    }, element);
+    return () => media.revert();
+  }, [root]);
 
   useLayoutEffect(() => {
     const element = root.current;
@@ -164,13 +230,16 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
       showResults(0, false);
 
       // Entrada da página.
-      gsap
+      const entrance = gsap
         .timeline({ defaults: { ease: 'power3.out' } })
         .from(q('[data-lp="nav"]'), { y: -40, opacity: 0, duration: 0.7 })
-        .from(q('[data-lp="rise"]'), { y: 28, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.1)
-        .from(q('[data-lp="demo"] > *'), { x: 60, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.05 }, 0.25)
-        .from(chips, { y: -14, opacity: 0, duration: 0.5, stagger: 0.06 }, 0.6)
-        .from(q('[data-lp="marquee"]'), { y: 30, opacity: 0, duration: 0.7 }, 0.5);
+        .from(q('[data-lp="rise"]'), { y: 28, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.1);
+      if (window.matchMedia('(min-width: 901px)').matches) {
+        entrance
+          .from(chips, { y: -14, opacity: 0, duration: 0.5, stagger: 0.06 }, 0.6)
+          .from(q('[data-lp="demo"] > *'), { x: 60, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.05 }, 0.25)
+          .from(q('[data-lp="marquee"]'), { y: 30, opacity: 0, duration: 0.7 }, 0.5);
+      }
 
       // Carrossel: todos deslizam uma posição para a esquerda; o que sai pela
       // esquerda reaparece pela direita, sem atravessar a tela.
@@ -262,6 +331,8 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
       const element = root.current;
       if (!element || leaving.current) return;
       leaving.current = true;
+      scrollMotion.current?.scrollTrigger?.kill();
+      scrollMotion.current?.pause();
       if (reducedMotion()) {
         done();
         return;
@@ -282,7 +353,7 @@ export function useLandingMotion(root: RefObject<HTMLDivElement | null>) {
             opacity: 0, duration: 0.25, overwrite: true,
           }, 0)
           .to(cart, {
-            y: exitY, duration: 0.85, ease: 'power2.inOut', overwrite: true,
+            y: exitY, scale: 1.18, transformOrigin: '50% 100%', duration: 0.85, ease: 'power2.inOut', overwrite: true,
           }, 0.06);
         return;
       }

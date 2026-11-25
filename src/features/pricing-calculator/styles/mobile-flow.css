@@ -155,7 +155,7 @@
   .cw-mobile-step-actions .cw-step-next { flex: 1; background: #ff4c0c; color: white; border-color: #ff4c0c; }
   .cw-wave-actions .cw-wave-definitions { position: absolute; pointer-events: none; }
   .cw-wave-actions button { position: relative; isolation: isolate; overflow: hidden; }
-  .cw-wave-actions :is(.cw-step-next, .cw-step-back) { color: white; background: #1d1d1f; border-color: transparent; }
+  .cw-wave-actions :is(.cw-step-next, .cw-step-back) { color: white; background: #1d1d1f; border: 0; }
   .cw-wave-actions button > :not(.cw-button-wave) { position: relative; z-index: 1; }
   .cw-wave-actions .cw-button-wave { position: absolute; z-index: 0; inset: -1px; background: #ff4c0c; border-radius: inherit; pointer-events: none; }
   .cw-wave-actions button:hover { background: #1d1d1f; }
